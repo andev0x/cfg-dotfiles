@@ -1,0 +1,44 @@
+# macOS system files
+.DS_Store
+
+# Vim swap files
+*.swp
+
+# VSCode settings
+.vscode/
+
+# Log files
+*.log
+
+# Node modules (if using Node.js)
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Backup files
+*~
+
+# Environment files
+.env
+
+# Compiled binaries
+*.out
+*.exe
+*.o
+*.a
+*.so
+
+# Ignore personal shell history
+.bash_history
+.zsh_history
+
+# Ignore SSH and GPG keys
+*.pem
+*.key
+*.crt
+*.gpg
+
+# Ignore custom local config
+local.*
