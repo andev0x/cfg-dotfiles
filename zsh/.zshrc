@@ -69,10 +69,18 @@ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
   tmux attach-session -t main || tmux new-session -s main
 fi
 
+# Auto-save tmux session on terminal exit
+function save_tmux_session_on_exit {
+  if [ -n "$TMUX" ]; then
+    tmux run-shell ~/.tmux/plugins/tmux-resurrect/scripts/save.sh
+  fi
+}
+trap save_tmux_session_on_exit EXIT
+
 
 ### Atuin (smart history with Ctrl+R, optional)
 if command -v atuin &> /dev/null; then
-  eval "$(atuin init zsh)"
+   eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
 ### Powerlevel10k Config
@@ -83,3 +91,8 @@ fi
 
 # shell like vscode
 eval "$(zoxide init zsh)"
+
+# alias ghostty config
+alias ghostty-config='nvim ~/Library/Application\ Support/dev.abcxyz.Ghostty/config'
+
+
