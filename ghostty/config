@@ -16,7 +16,7 @@ font-thicken           = false
 # -----------------------------------------------------------------------------
 # Colors (Green Forest Dark)
 # -----------------------------------------------------------------------------
-theme                  = "catppuccin-frappe"
+theme                  = "djangorebornagain"
 background             = "#0F1F0F"
 foreground             = "#C0FFC0"
 cursor-style           = block
