@@ -16,11 +16,11 @@ font-thicken           = false
 # -----------------------------------------------------------------------------
 # Colors (Green Forest Dark)
 # -----------------------------------------------------------------------------
-theme                  = "djangorebornagain"
-background             = "#0F1F0F"
-foreground             = "#C0FFC0"
+theme                  = "gruvboxdark"
+background             = "010D00"
+foreground             = "#B2D98B"
 cursor-style           = block
-cursor-opacity         = 0.85
+cursor-opacity         = 0.75
 cursor-color           = "#80FF80"
 bold-is-bright         = true
 minimum-contrast       = 1.5
@@ -28,7 +28,7 @@ minimum-contrast       = 1.5
 # -----------------------------------------------------------------------------
 # Visuals
 # -----------------------------------------------------------------------------
-background-opacity     = 0.5
+background-opacity     = 0.8
 background-blur-radius = 10
 window-colorspace      = srgb
 macos-titlebar-style   = transparent
@@ -36,12 +36,14 @@ macos-titlebar-style   = transparent
 # -----------------------------------------------------------------------------
 # Window
 # -----------------------------------------------------------------------------
-window-width           = 180
-window-height          = 45
+window-width           = 190
+window-height          = 48
 window-padding-balance = true
 window-save-state      = always
 resize-overlay         = never
-confirm-close-surface  = false
+confirm-close-surface  = true
+macos-titlebar-style   = hidden
+window-decoration      = true
 
 # -----------------------------------------------------------------------------
 # Integration & Clipboard
@@ -78,4 +80,3 @@ keybind = cmd+0=reset_font_size
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard
 keybind = cmd+r=reload_config
-
