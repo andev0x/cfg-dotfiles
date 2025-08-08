@@ -17,6 +17,8 @@ alias vim='nvim'
 alias dcup="docker compose up -d"
 alias dcstop="docker compose stop"
 alias lzd="lazydocker"
+alias ghostty-config='nvim ~/Library/Application\ Support/com.mitchellh.ghostty/config'
+
 
 ### Bun
 export BUN_INSTALL="$HOME/.bun"
@@ -92,7 +94,13 @@ fi
 # shell like vscode
 eval "$(zoxide init zsh)"
 
-# alias ghostty config
-alias ghostty-config='nvim ~/Library/Application\ Support/dev.abcxyz.Ghostty/config'
+# Load Gemini API Key from a separate .env file
+if [ -f "$HOME/.env_gemini_cli" ]; then
+    source "$HOME/.env_gemini_cli"
+fi
 
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/anvndev/.lmstudio/bin"
+export OPENAI_API_KEY="your_openai_api_key_here"  # Replace with your actual OpenAI API key
+# End of LM Studio CLI section
 
