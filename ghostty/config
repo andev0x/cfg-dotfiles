@@ -31,7 +31,7 @@ minimum-contrast       = 1.5
 background-opacity     = 0.8
 background-blur-radius = 10
 window-colorspace      = srgb
-macos-titlebar-style   = transparent
+macos-titlebar-style   = hidden
 
 # -----------------------------------------------------------------------------
 # Window
@@ -79,4 +79,4 @@ keybind = cmd+minus=decrease_font_size:1
 keybind = cmd+0=reset_font_size
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard
-keybind = cmd+r=reload_config   
+keybind = cmd+r=reload_config
