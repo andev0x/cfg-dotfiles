@@ -42,8 +42,8 @@ window-padding-balance = true
 window-save-state      = always
 resize-overlay         = never
 confirm-close-surface  = true
-macos-titlebar-style   = hidden
-window-decoration      = true
+macos-non-native-fullscreen = false
+window-decoration      = none
 
 # -----------------------------------------------------------------------------
 # Integration & Clipboard
@@ -79,4 +79,4 @@ keybind = cmd+minus=decrease_font_size:1
 keybind = cmd+0=reset_font_size
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard
-keybind = cmd+r=reload_config
+keybind = cmd+r=reload_config   
