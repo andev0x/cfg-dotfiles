@@ -2,6 +2,26 @@
 -- Statusline configuration
 
 return {
+	-- Preview markdown
+	{
+		"andev0x/mdview.nvim",
+		build = "npm install",
+		config = function()
+			require("mdview").setup()
+		end,
+	},
+	-- Glow for markdown preview
+	{
+		"ellisonleao/glow.nvim",
+		config = true,
+		cmd = "Glow",
+		ft = "markdown",
+	},
+	-- Diffview for git diffs
+	{
+		"sindrets/diffview.nvim",
+		event = "VeryLazy",
+	},
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
@@ -11,7 +31,7 @@ return {
 			local devicons = require("nvim-web-devicons")
 			-- Custom component: user name
 			local function user_name()
-				return " anvndev"
+				return " anvndev"
 			end
 			-- Custom component: filetype with icon
 			local function filetype_with_icon()

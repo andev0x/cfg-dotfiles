@@ -14,10 +14,10 @@ keymap("n", "<C-k>", "<C-w>k", { desc = "Navigate to top window" })
 keymap("n", "<C-l>", "<C-w>l", { desc = "Navigate to right window" })
 
 -- Resize windows
-keymap("n", "<C-Up>", ":resize -2<CR>", { desc = "Decrease window height" })
-keymap("n", "<C-Down>", ":resize +2<CR>", { desc = "Increase window height" })
-keymap("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
-keymap("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
+keymap("n", "<leader>K", ":resize -2<CR>", { desc = "Decrease window height" })
+keymap("n", "<leader>J", ":resize +2<CR>", { desc = "Increase window height" })
+keymap("n", "<leader>H", ":vertical resize -2<CR>", { desc = "Decrease window width" })
+keymap("n", "<leader>L", ":vertical resize +2<CR>", { desc = "Increase window width" })
 
 -- Buffer navigation
 keymap("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
@@ -80,8 +80,12 @@ keymap("n", "<leader>du", ":lua require'dapui'.toggle()<CR>", { desc = "Toggle D
 keymap("n", "<leader>dt", ":lua require'dap'.terminate()<CR>", { desc = "Terminate" })
 
 -- Terminal
-keymap("n", "<leader>t", ":ToggleTerm<CR>", { desc = "Toggle terminal" })
+keymap("n", "<leader>tt", ":ToggleTerm<CR>", { desc = "Toggle terminal" })
 keymap("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
--- Lazygit
-keymap("n", "<leader>gg", ":LazyGit<CR>", { desc = "LazyGit" })
+-- Toggle features
+keymap("n", "<leader>ts", ":set spell!<CR>", { desc = "Toggle spell check" })
+keymap("n", "<leader>tr", ":set relativenumber!<CR>", { desc = "Toggle relative line numbers" })
+keymap("n", "<leader>tw", ":set wrap!<CR>", { desc = "Toggle word wrap" })
+keymap("n", "<leader>tl", ":set list!<CR>", { desc = "Toggle invisible characters" })
+keymap("n", "<leader>th", ":set hlsearch!<CR>", { desc = "Toggle search highlight" })

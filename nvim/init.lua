@@ -20,10 +20,18 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
+-- SQLFormat
+-- vim.api.nvim_set_keymap("v", "<Leader>f", "<Plug>SQLFormat", { noremap = true, silent = true })
+-- vim.cmd([[command! SQLFormat call sqlformat#Format(1, line('$'))]])
+--
+-- Python Provider
+vim.g.python3_host_prog = "~/Library/Frameworks/Python.framework/Versions/3.13/bin/python3"
+
 -- Load core settings
 require("anvndev.core.options")
 require("anvndev.core.keymaps")
 require("anvndev.core.autocmds")
+require("anvndev.core.which-key")
 
 -- Initialize lazy.nvim with plugins
 require("lazy").setup("anvndev.plugins", {

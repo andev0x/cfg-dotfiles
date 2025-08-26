@@ -4,10 +4,18 @@ This is my personal Neovim configuration, built with a focus on modern developme
 
 ----
 
-<p float="left">
-  <img src="https://raw.githubusercontent.com/andevgo/description-image-archive/refs/heads/main/nvim-dotfies/p3.png" width="450" />
-  <img src="https://raw.githubusercontent.com/andevgo/description-image-archive/refs/heads/main/nvim-dotfies/p4.png" width="450" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/andev0x/description-image-archive/refs/heads/main/nvim-dotfies/p3.png" width="350" />
+  <img src="https://raw.githubusercontent.com/andev0x/description-image-archive/refs/heads/main/nvim-dotfies/p4.png" width="350" />
 </p>
+
+<div align="center">
+
+# nvim-dotfiles by andev0x
+
+ [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Neovim](https://img.shields.io/badge/Neovim-%3E=0.9.0-blueviolet?logo=neovim)](https://neovim.io/) [![Neovim](https://img.shields.io/badge/my%20blog-andev0x-blue)](https://andev0x.github.io/)
+
+</div>
 
 ## Features
 
@@ -22,6 +30,7 @@ This is my personal Neovim configuration, built with a focus on modern developme
   - Rust
   - C/C++
   - Python
+  - Sql
 
 ## Requirements
 
@@ -33,7 +42,7 @@ This is my personal Neovim configuration, built with a focus on modern developme
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/andevgo/nvim-dotfiles.git ~/.config/nvim
+git clone https://github.com/andev0x/nvim-dotfiles.git ~/.config/nvim
 ```
 
 2. Start Neovim and let the plugins install:
@@ -45,7 +54,7 @@ nvim
 
 ```
 ~/.config/nvim/
-├── init.lua              # Main entry point
+├── init.lua             # Main entry point
 ├── lua/
 │   └── anvndev/         # Main configuration directory
 │       ├── core/        # Core settings
@@ -65,4 +74,5 @@ nvim
 
 ## License
 
-MIT [License](https://github.com/andevgo/nvim-dotfiles?tab=License-1-ov-file#readme) 
+MIT [License](LICENSE)
+
