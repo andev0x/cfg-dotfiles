@@ -1,161 +1,91 @@
 -- ~/.config/nvim/lua/anvndev/plugins/lang/rust.lua
--- Rust language configuration
+-- Rust language configuration for Neovim
 
 return {
-  {
-    "simrat39/rust-tools.nvim",
-    ft = { "rust" },
-    dependencies = {
-      
-      "nvim-lua/plenary.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    config = function()
-      local rt = require("rust-tools")
-      
-      -- Find the path to codelldb
-      local extension_path = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/"
-      local codelldb_path = extension_path .. "adapter/codelldb"
-      local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib" -- macOS specific
-      
-      rt.setup({
-        server = {
-          on_attach = function(client, bufnr)
-            -- Hover actions
-            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-            -- Code action groups
-            vim.keymap.set("n", "<Leader>ra", rt.code_action_group.code_action_group, { buffer = bufnr })
-            
-            -- Enable inlay hints
-            rt.inlay_hints.enable()
-            
-            -- LSP mappings
-            vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
-            vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
-            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = bufnr })
-            vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr })
-            vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr })
-            vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr })
-          end,
-          settings = {
-            ["rust-analyzer"] = {
-              checkOnSave = {
-                command = "clippy",
-              },
-              cargo = {
-                allFeatures = true,
-                loadOutDirsFromCheck = true,
-                runBuildScripts = true,
-              },
-              procMacro = {
-                enable = true,
-              },
-              inlayHints = {
-                bindingModeHints = {
-                  enable = true,
-                },
-                chainingHints = {
-                  enable = true,
-                },
-                closingBraceHints = {
-                  enable = true,
-                  minLines = 25,
-                },
-                closureReturnTypeHints = {
-                  enable = "always",
-                },
-                lifetimeElisionHints = {
-                  enable = "always",
-                  useParameterNames = true,
-                },
-                maxLength = 25,
-                parameterHints = {
-                  enable = true,
-                },
-                reborrowHints = {
-                  enable = "always",
-                },
-                renderColons = true,
-                typeHints = {
-                  enable = true,
-                  hideClosureInitialization = false,
-                  hideNamedConstructor = false,
-                },
-              },
-            },
-          },
-        },
-        tools = {
-          inlay_hints = {
-            auto = true,
-            show_parameter_hints = true,
-            parameter_hints_prefix = "<- ",
-            other_hints_prefix = "=> ",
-            max_len_align = false,
-            max_len_align_padding = 1,
-            right_align = false,
-            right_align_padding = 7,
-            highlight = "Comment",
-          },
-          hover_actions = {
-            border = {
-              { "╭", "FloatBorder" },
-              { "─", "FloatBorder" },
-              { "╮", "FloatBorder" },
-              { "│", "FloatBorder" },
-              { "╯", "FloatBorder" },
-              { "─", "FloatBorder" },
-              { "╰", "FloatBorder" },
-              { "│", "FloatBorder" },
-            },
-            auto_focus = true,
-          },
-        },
-        dap = {
-          adapter = {
-            type = "executable",
-            command = codelldb_path,
-            name = "rt_lldb",
-            args = { "--liblldb", liblldb_path },
-          },
-        },
-      })
-    end,
-  },
-  
-  -- Crates.io integration
-  {
-    "saecki/crates.nvim",
-    event = { "BufRead Cargo.toml" },
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("crates").setup({
-        null_ls = {
-          enabled = true,
-          name = "crates.nvim",
-        },
-        popup = {
-          border = "rounded",
-        },
-      })
-    end,
-  },
-  
-  -- Rust test integration
-  {
-    "nvim-neotest/neotest",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "antoinemadec/FixCursorHold.nvim",
-      "rouge8/neotest-rust",
-    },
-    config = function()
-      require("neotest").setup({
-        adapters = {
-        require("neotest-rust"),
-        },
-      })
-    end,
-  },
+	{
+		"mrcjkb/rustaceanvim",
+		version = "^5", -- ensure stable release
+		ft = { "rust" },
+		config = function()
+			-------------------------------------------------------------------------
+			-- 🦀 Setup rustaceanvim (Rust LSP + Tools)
+			-------------------------------------------------------------------------
+			vim.g.rustaceanvim = {
+				server = {
+					on_attach = function(client, bufnr)
+						local map = vim.keymap.set
+						local opts = { noremap = true, silent = true, buffer = bufnr }
+
+						-- 🔧 LSP keymaps
+						map("n", "K", vim.lsp.buf.hover, opts)
+						map("n", "gd", vim.lsp.buf.definition, opts)
+						map("n", "gr", vim.lsp.buf.references, opts)
+						map("n", "<leader>rn", vim.lsp.buf.rename, opts)
+						map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+						map("n", "<leader>f", function()
+							vim.lsp.buf.format({ async = true })
+						end, opts)
+
+						-- 🧩 Rust-specific actions
+						map("n", "<leader>rr", "<cmd>RustLsp runnables<CR>", opts)
+						map("n", "<leader>rt", "<cmd>RustLsp testables<CR>", opts)
+						map("n", "<leader>re", "<cmd>RustLsp expandMacro<CR>", opts)
+						map("n", "<leader>rd", "<cmd>RustLsp openDocs<CR>", opts)
+					end,
+					settings = {
+						["rust-analyzer"] = {
+							cargo = {
+								allFeatures = true,
+							},
+							checkOnSave = {
+								command = "clippy",
+							},
+							diagnostics = {
+								enable = true,
+								experimental = { enable = true },
+							},
+							inlayHints = {
+								bindingModeHints = { enable = true },
+								chainingHints = { enable = true },
+								closingBraceHints = { enable = true },
+								closureReturnTypeHints = { enable = "always" },
+								lifetimeElisionHints = { enable = "always" },
+								parameterHints = { enable = true },
+								reborrowHints = { enable = "always" },
+								typeHints = { enable = true },
+							},
+						},
+					},
+				},
+			}
+
+			-------------------------------------------------------------------------
+			-- 🎨 Configure diagnostic signs with icons
+			-------------------------------------------------------------------------
+			vim.diagnostic.config({
+				virtual_text = false, -- no inline diagnostic messages
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = " ", -- nf-fa-times_circle
+						[vim.diagnostic.severity.WARN] = " ", -- nf-fa-warning
+						[vim.diagnostic.severity.INFO] = "󰙎 ", -- nf-fa-info_circle
+						[vim.diagnostic.severity.HINT] = " ", -- nf-oct-light_bulb
+					},
+				},
+				underline = true,
+				update_in_insert = false,
+				severity_sort = true,
+			})
+
+			-------------------------------------------------------------------------
+			-- 🧰 Auto format on save for Rust files
+			-------------------------------------------------------------------------
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				pattern = "*.rs",
+				callback = function()
+					vim.lsp.buf.format({ async = false })
+				end,
+			})
+		end,
+	},
 }
