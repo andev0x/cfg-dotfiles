@@ -1,86 +1,86 @@
 {
-  "theme": "Catppuccin Mocha (Blur) [Light]",
-  "icon_theme": "Material Icon Theme",
-  "ui_font_family": "JetBrainsMono Nerd Font",
-
-  "window_background_appearance": "vibrancy_dark",
-  "window_background_opacity": 0.78,
-
-  "preview_tabs": {
-    "enable_preview_from_code_navigation": true
-  },
-
-  "tabs": {
-    "show_diagnostics": "all",
-    "file_icons": true,
-    "git_status": true
-  },
-
-  "title_bar": {
-    "show_menus": false,
-    "show_branch_icon": true
-  },
-
-  "font": {
-    "family": "JetBrainsMono Nerd Font Mono",
-    "size": 14,
-    "features": {
-      "liga": true,
-      "calt": true,
-      "clig": true
+    "agent": {
+        "default_model": {
+            "provider": "openrouter",
+            "model": "google/gemma-3-4b-it:free"
+        },
+        "model_parameters": []
     },
-    "fallbacks": [
-      "Symbols Nerd Font Mono",
-      "Noto Color Emoji",
-      "Apple Color Emoji"
-    ]
-  },
-
-  "terminal": {
-    "font_family": "JetBrainsMono Nerd Font",
-    "integrated": {
-      "font_family": "JetBrainsMono Nerd Font",
-      "font_size": 14,
-      "line_height": "comfortable",
-      "option_as_alt": true,
-      "detect_nerdfont": true,
-      "force_nerdfont": true
+    "inlay_hints": {
+        "enabled": true
+    },
+    "theme": "Catppuccin Mocha (Blur) [Light]",
+    "icon_theme": "Material Icon Theme",
+    "ui_font_family": "JetBrainsMono Nerd Font",
+    "window_background_appearance": "vibrancy_dark",
+    "window_background_opacity": 0.78,
+    "preview_tabs": {
+        "enable_preview_from_code_navigation": true
+    },
+    "tabs": {
+        "show_diagnostics": "all",
+        "file_icons": true,
+        "git_status": true
+    },
+    "title_bar": {
+        "show_menus": false,
+        "show_branch_icon": true
+    },
+    "font": {
+        "family": "JetBrainsMono Nerd Font Mono",
+        "size": 14,
+        "features": {
+            "liga": true,
+            "calt": true,
+            "clig": true
+        },
+        "fallbacks": [
+            "Symbols Nerd Font Mono",
+            "Noto Color Emoji",
+            "Apple Color Emoji"
+        ]
+    },
+    "terminal": {
+        "font_family": "JetBrainsMono Nerd Font",
+        "integrated": {
+            "font_family": "JetBrainsMono Nerd Font",
+            "font_size": 14,
+            "line_height": "comfortable",
+            "option_as_alt": true,
+            "detect_nerdfont": true,
+            "force_nerdfont": true
+        }
+    },
+    "editor": {
+        "minimap": {
+            "enabled": false
+        },
+        "show_fold_widgets": false,
+        "show_editor_mode": true,
+        "show_line_numbers": "on"
+    },
+    "tab_bar": {
+        "show": false
+    },
+    "project_panel": {
+        "dock": "right",
+        "indent_guides": {
+            "show": "never"
+        }
+    },
+    "vim_mode": true,
+    "vim": {
+        "useSystemClipboard": true,
+        "useCtrlKeys": true,
+        "utf8": true,
+        "statusDisplay": "mode",
+        "timeout": true,
+        "timeoutlen": 800,
+        "cursorStylePerMode": {
+            "normal": "block",
+            "insert": "bar",
+            "visual": "block",
+            "replace": "underline"
+        }
     }
-  },
-
-  "editor": {
-    "minimap": { "enabled": false },
-    "show_fold_widgets": false,
-    "show_editor_mode": true
-  },
-
-  "gutter": {
-    "line_numbers": false
-  },
-
-  "tab_bar": {
-    "show": false
-  },
-
-  "project_panel": {
-    "dock": "right",
-    "indent_guides": { "show": "never" }
-  },
-
-  "vim_mode": true,
-
-  "vim": {
-    "useSystemClipboard": true,
-    "useCtrlKeys": true,
-    "utf8": true,
-    "statusDisplay": "mode",
-    "timeout": true,
-    "timeoutlen": 800,
-    "cursorStylePerMode": {
-      "normal": "block",
-      "insert": "bar",
-      "visual": "block",
-      "replace": "underline"
-    }
-  }
 }

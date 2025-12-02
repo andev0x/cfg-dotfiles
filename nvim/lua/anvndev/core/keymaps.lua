@@ -1,11 +1,15 @@
 -- ~/.config/nvim/lua/anvndev/core/keymaps.lua
 -- Global key mappings
+-- Author: anvndev
 
 local utils = require("anvndev.utils")
 local keymap = utils.keymap
 
 -- Clear search highlights
 keymap("n", "<Esc>", ":nohl<CR>", { desc = "Clear search highlights" })
+
+-- Remove extra comment characters in the first line
+keymap("n", "<leader>//", ":'<,'>s#^s*//s*##g<CR>", { desc = "Remove extra comment characters in the first line" })
 
 -- Window navigation
 keymap("n", "<C-h>", "<C-w>h", { desc = "Navigate to left window" })
@@ -52,65 +56,88 @@ keymap("n", "<leader>fc", ":Telescope commands<CR>", { desc = "Commands" })
 keymap("n", "<leader>fr", ":Telescope oldfiles<CR>", { desc = "Recent files" })
 keymap("n", "<leader>fk", ":Telescope keymaps<CR>", { desc = "Keymaps" })
 
--- LSP
+-- LSP (Diagnostics)
+-- Ensure this does not conflict with Debug mappings (<leader>d...)
 keymap("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 keymap("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 keymap("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 keymap("n", "<leader>lq", vim.diagnostic.setloclist, { desc = "Diagnostics list" })
 
--- Git
-keymap("n", "<leader>gg", ":LazyGit<CR>", { desc = "LazyGit" })
-keymap("n", "<leader>gj", ":Gitsigns next_hunk<CR>", { desc = "Next git hunk" })
-keymap("n", "<leader>gk", ":Gitsigns prev_hunk<CR>", { desc = "Previous git hunk" })
-keymap("n", "<leader>gl", ":Gitsigns blame_line<CR>", { desc = "Git blame line" })
-keymap("n", "<leader>gp", ":Gitsigns preview_hunk<CR>", { desc = "Preview git hunk" })
-keymap("n", "<leader>gr", ":Gitsigns reset_hunk<CR>", { desc = "Reset git hunk" })
-keymap("n", "<leader>gs", ":Gitsigns stage_hunk<CR>", { desc = "Stage git hunk" })
-keymap("n", "<leader>gu", ":Gitsigns undo_stage_hunk<CR>", { desc = "Undo stage git hunk" })
-
--- Debugging
+-- Debugging (DAP)
+-- Using safer pcall to avoid errors if DAP is not loaded
 keymap("n", "<leader>db", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.toggle_breakpoint() end
+	if ok and dap then
+		dap.toggle_breakpoint()
+	end
 end, { desc = "Toggle breakpoint" })
+
 keymap("n", "<leader>dc", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.continue() end
+	if ok and dap then
+		dap.continue()
+	end
 end, { desc = "Continue" })
+
 keymap("n", "<leader>di", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.step_into() end
+	if ok and dap then
+		dap.step_into()
+	end
 end, { desc = "Step into" })
+
 keymap("n", "<leader>do", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.step_over() end
+	if ok and dap then
+		dap.step_over()
+	end
 end, { desc = "Step over" })
+
 keymap("n", "<leader>dO", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.step_out() end
+	if ok and dap then
+		dap.step_out()
+	end
 end, { desc = "Step out" })
+
 keymap("n", "<leader>dr", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap and dap.repl then pcall(dap.repl.toggle, dap.repl) end
+	if ok and dap and dap.repl then
+		pcall(dap.repl.toggle, dap.repl)
+	end
 end, { desc = "Toggle REPL" })
+
 keymap("n", "<leader>dl", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.run_last() end
+	if ok and dap then
+		dap.run_last()
+	end
 end, { desc = "Run last" })
+
 keymap("n", "<leader>du", function()
 	local ok, ui = pcall(require, "dapui")
-	if ok and ui then ui.toggle() end
+	if ok and ui then
+		ui.toggle()
+	end
 end, { desc = "Toggle DAP UI" })
+
 keymap("n", "<leader>dt", function()
 	local ok, dap = pcall(require, "dap")
-	if ok and dap then dap.terminate() end
+	if ok and dap then
+		dap.terminate()
+	end
 end, { desc = "Terminate" })
 
 -- Terminal
 keymap("n", "<leader>tt", ":ToggleTerm<CR>", { desc = "Toggle terminal" })
+keymap("n", "<leader>tf", ":ToggleTerm direction=float<CR>", { desc = "Float terminal" })
+keymap("n", "<leader>th", ":ToggleTerm direction=horizontal<CR>", { desc = "Horizontal terminal" })
+keymap("n", "<leader>tv", ":ToggleTerm direction=vertical<CR>", { desc = "Vertical terminal" })
+
+-- Exit terminal mode
 keymap("t", "<Esc>", function()
 	local seq = [[<C-\><C-n>]]
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(seq, true, false, true), 'n', true)
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(seq, true, false, true), "n", true)
 end, { desc = "Exit terminal mode" })
 
 -- Toggle features
@@ -118,4 +145,8 @@ keymap("n", "<leader>ts", ":set spell!<CR>", { desc = "Toggle spell check" })
 keymap("n", "<leader>tr", ":set relativenumber!<CR>", { desc = "Toggle relative line numbers" })
 keymap("n", "<leader>tw", ":set wrap!<CR>", { desc = "Toggle word wrap" })
 keymap("n", "<leader>tl", ":set list!<CR>", { desc = "Toggle invisible characters" })
-keymap("n", "<leader>th", ":set hlsearch!<CR>", { desc = "Toggle search highlight" })
+keymap("n", "<leader>tH", ":set hlsearch!<CR>", { desc = "Toggle search highlight" }) -- Changed to tH to avoid conflict with Horizontal Terminal
+
+-- Tab
+keymap("v", "<Tab>", ">gv")
+keymap("v", "<S-Tab>", "<gv")

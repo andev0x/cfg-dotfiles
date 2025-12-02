@@ -1,5 +1,6 @@
 -- ~/.config/nvim/lua/anvndev/plugins/init.lua
 -- Main plugin loader for lazy.nvim
+-- Author: anvndev
 
 return {
 	-- Core plugins
@@ -13,6 +14,7 @@ return {
 	{ import = "anvndev.plugins.ui.lualine" },
 	{ import = "anvndev.plugins.ui.filetree" },
 	{ import = "anvndev.plugins.ui.icons" },
+	{ import = "anvndev.plugins.ui.colorizer" },
 
 	-- LSP, completion, and formatting (load on demand)
 	{ import = "anvndev.plugins.lsp.init" },
@@ -29,7 +31,10 @@ return {
 	{ import = "anvndev.plugins.lang.sql", ft = "sql" },
 
 	-- Miscellaneous plugins (load on demand)
+	{ import = "anvndev.plugins.misc.copilot" },
+	{ import = "anvndev.plugins.misc.copilot_chat" },
 	{ import = "anvndev.plugins.misc.git" },
+	{ import = "anvndev.plugins.misc.lazygit" },
 	{ import = "anvndev.plugins.misc.comment" },
 	{ import = "anvndev.plugins.misc.telescope" },
 	{ import = "anvndev.plugins.misc.treesitter" },

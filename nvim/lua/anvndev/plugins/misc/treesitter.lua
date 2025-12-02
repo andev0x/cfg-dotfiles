@@ -1,5 +1,6 @@
 -- ~/.config/nvim/lua/anvndev/plugins/misc/treesitter.lua
 -- Treesitter configuration
+-- Author: anvndev
 
 return {
 	{
@@ -155,10 +156,10 @@ return {
 					swap = {
 						enable = true,
 						swap_next = {
-							["<leader>a"] = "@parameter.inner",
+							["<leader>sa"] = "@parameter.inner",
 						},
 						swap_previous = {
-							["<leader>A"] = "@parameter.inner",
+							["<leader>sA"] = "@parameter.inner",
 						},
 					},
 				},
@@ -166,4 +167,3 @@ return {
 		end,
 	},
 }
-
