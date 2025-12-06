@@ -5,6 +5,7 @@
 ⸻
 
 **🚀 Features**
+
 	•	Modern TMUX configuration for macOS & Linux
 	•	Mouse support (scroll, drag, selection)
 	•	Native clipboard copy (pbcopy / xclip / xsel / wl-copy)
@@ -79,6 +80,7 @@ prefix + I
 (Default prefix = Ctrl+b)
 
 > This installs:
+
 	•	tmux-resurrect
 	•	tmux-continuum
 	•	tmux-cpu
@@ -93,7 +95,6 @@ macOS
 Selection → clipboard via:
 ```
 pbcopy
-``pbcopy
 ```
 Linux (X11)
 
@@ -147,6 +148,7 @@ sudo apt install xclip -y
 2. True color not working
 
 Ensure terminal uses one of:
+
 	•	xterm-256color
 	•	alacritty
 	•	kitty
@@ -179,6 +181,7 @@ tmux source-file ~/.tmux.conf
 ⸻
 
 #### 🏁 Recommended Terminals
+
 	•	Kitty (best performance)
 	•	WezTerm (GPU accelerated)
 	•	Alacritty (fast + minimal)
