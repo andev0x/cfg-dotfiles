@@ -18,10 +18,10 @@ return {
 				auto_trigger = true,
 				dim_color = { "#6e6a86", "#e0b162" }, -- Default from Cursor.nvim (Dracula theme)
 				keymap = {
-					accept = "<tab>", -- Default from Cursor.nvim
-					next = "<M-]>",
-					prev = "<M-[>",
-					dismiss = "<C-]>",
+					accept = "<M-m>", -- Default from Cursor.nvim
+					next = "<M-[>",
+					prev = "<M-]>",
+					-- dismiss = "<C-]-d>",
 				},
 			},
 			filetypes = {
