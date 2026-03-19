@@ -1,0 +1,153 @@
+
+prSections:
+  - title: My Pull Requests
+    filters: is:open author:@me draft:false
+
+  - title: Needs My Review
+    filters: is:open review-requested:@me -reviewed-by:@me draft:false
+
+  - title: Involved
+    filters: is:open involves:@me -author:@me draft:false
+
+  - title: Ready to Merge
+    filters: is:open review:approved draft:false
+
+  - title: Stale PRs
+    filters: is:open updated:<7d draft:false
+
+issuesSections:
+  - title: My Issues
+    filters: is:open author:@me
+
+  - title: Assigned
+    filters: is:open assignee:@me
+
+  - title: Involved
+    filters: is:open involves:@me -author:@me
+
+  - title: High Priority
+    filters: is:open label:priority-high
+
+notificationsSections:
+  - title: Review Requested
+    filters: reason:review-requested
+
+  - title: Mentioned
+    filters: reason:mention
+
+  - title: Assigned
+    filters: reason:assign
+
+  - title: Participating
+    filters: reason:participating
+
+repo:
+  branchesRefetchIntervalSeconds: 60
+  prsRefetchIntervalSeconds: 120
+
+defaults:
+  preview:
+    open: true
+    width: 0.5
+
+  prsLimit: 20
+  issuesLimit: 20
+  notificationsLimit: 20
+
+  prApproveComment: LGTM
+
+  view: prs
+
+  layout:
+    prs:
+      updatedAt:
+        width: 5
+      createdAt:
+        width: 5
+      repo:
+        width: 20
+      author:
+        width: 12
+      authorIcon:
+        hidden: false
+      assignees:
+        hidden: true
+      base:
+        hidden: true
+      lines:
+        width: 10
+
+    issues:
+      updatedAt:
+        width: 5
+      createdAt:
+        width: 5
+      repo:
+        width: 18
+      creator:
+        width: 10
+      creatorIcon:
+        hidden: false
+      assignees:
+        hidden: true
+
+  refetchIntervalMinutes: 30
+
+keybindings:
+  universal:
+    - key: g
+      name: open lazygit
+      command: >
+        cd {{.RepoPath}} && lazygit
+
+    - key: o
+      name: open in browser
+      command: >
+        gh pr view {{.PrNumber}} --web || gh issue view {{.IssueNumber}} --web
+
+  prs:
+    - key: c
+      name: checkout PR
+      command: >
+        gh pr checkout {{.PrNumber}}
+
+    - key: C
+      name: review in tmux
+      command: >
+        tmux new-window -n "PR-{{.PrNumber}}" "gh pr checkout {{.PrNumber}} && nvim"
+
+    - key: v
+      name: view diff
+      command: >
+        gh pr diff {{.PrNumber}} | ${PAGER:-less}
+
+    - key: a
+      name: approve PR
+      command: >
+        gh pr review {{.PrNumber}} --approve -b "LGTM"
+
+    - key: r
+      name: request changes
+      command: >
+        gh pr review {{.PrNumber}} --request-changes -b "Please address feedback"
+
+  issues:
+    - key: c
+      name: checkout branch (if exists)
+      command: >
+        gh issue view {{.IssueNumber}}
+
+theme:
+  ui:
+    sectionsShowCount: true
+    table:
+      showSeparator: true
+      compact: true
+
+pager:
+  diff: "delta"
+
+confirmQuit: false
+showAuthorIcons: true
+smartFilteringAtLaunch: true
+includeReadNotifications: false
