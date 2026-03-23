@@ -201,7 +201,7 @@ dev() {
 # ⚡ Auto tmux attach
 # =========================================================
 if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [[ $- == *i* ]]; then
-  tmux attach -t main || tmux new -s main
+  tmux attach -t andev0x || tmux new -s andev0x
 fi
 
 # =========================================================
