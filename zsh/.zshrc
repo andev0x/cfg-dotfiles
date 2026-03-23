@@ -1,4 +1,4 @@
-# =========================================================
+# =======================================================# =========================================================
 # ⚡ Powerlevel10k Instant Prompt (must stay at top)
 # =========================================================
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -12,10 +12,9 @@ export LANG="en_US.UTF-8"
 export EDITOR="nvim"
 
 # =========================================================
-#  Oh My Zsh Configuration
+# ⚡ Oh My Zsh
 # =========================================================
 export ZSH="$HOME/.oh-my-zsh"
-
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 plugins=(
@@ -28,7 +27,7 @@ plugins=(
 source "$ZSH/oh-my-zsh.sh"
 
 # =========================================================
-#  PATH Management (Zsh-native, no duplicates)
+#  PATH (clean & deduplicated)
 # =========================================================
 typeset -U path PATH
 
@@ -44,42 +43,36 @@ path=(
 export PATH
 
 # =========================================================
-#  Language & Toolchains
+#  Toolchains
 # =========================================================
+export GOPATH="$HOME/go"
 
-# ----  Bun ----
+# Bun
 export BUN_INSTALL="$HOME/.bun"
 [ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
 
-# ----  Golang ----
-export GOPATH="$HOME/go"
-
-# ----  Java (safe load) ----
+# Java
 if command -v /usr/libexec/java_home &> /dev/null; then
   export JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null)
   [ -n "$JAVA_HOME" ] && path+=($JAVA_HOME/bin)
 fi
 
-# ----  Android SDK (safe load) ----
+# Android
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 [ -d "$ANDROID_HOME" ] && path+=(
   $ANDROID_HOME/platform-tools
   $ANDROID_HOME/emulator
-  $ANDROID_HOME/tools
-  $ANDROID_HOME/tools/bin
 )
 
-# ----  Flutter & Ruby Gems ----
+# Extra tools
 path+=(
   $HOME/flutter/bin
   $HOME/.gem/bin
 )
 
 # =========================================================
-# ⚡ Lazy Load Heavy Tools (faster shell startup)
+# ⚡ Lazy Load (fast startup)
 # =========================================================
-
-# ----  NVM (lazy load) ----
 export NVM_DIR="$HOME/.nvm"
 nvm() {
   unset -f nvm node npm npx
@@ -87,7 +80,6 @@ nvm() {
   nvm "$@"
 }
 
-# ----  rbenv (lazy load) ----
 rbenv() {
   unset -f rbenv
   eval "$(command rbenv init -)"
@@ -95,54 +87,74 @@ rbenv() {
 }
 
 # =========================================================
-#  History Configuration (optimized + secure)
+#  History (secure + optimized)
 # =========================================================
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
 
 setopt INC_APPEND_HISTORY_TIME
-setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt HIST_REDUCE_BLANKS
-setopt HIST_VERIFY
 setopt HIST_IGNORE_SPACE
 
-#  Prevent sensitive commands from being stored
-function zshaddhistory() {
+zshaddhistory() {
   emulate -L zsh
   [[ "$1" == *"password"* || "$1" == *"secret"* || "$1" == *"token"* ]] && return 1
   return 0
 }
 
 # =========================================================
+# ⚡ FZF + Completion
+# =========================================================
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+autoload -Uz compinit && compinit
+[ -f ~/.fzf-tab.zsh ] && source ~/.fzf-tab.zsh
+
+# =========================================================
+#  Navigation
+# =========================================================
+eval "$(zoxide init zsh)"
+
+# =========================================================
+#  Atuin (history search)
+# =========================================================
+if command -v atuin &> /dev/null; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+  bindkey '^R' atuin-search 2>/dev/null
+fi
+
+# =========================================================
+#  Nushell Integration
+# =========================================================
+alias nu-run='nu -c'
+
+nuj() {
+  nu -c "from json | $1"
+}
+
+alias logs-json='docker logs | nu -c "from json"'
+
+# =========================================================
 #  Aliases
 # =========================================================
-
-# ----  Editor ----
 alias vim="nvim"
-
-# ----  Docker ----
-alias dcup="docker compose up -d"
-alias dcstop="docker compose stop"
-alias lzd="lazydocker"
-
-# ----  Utility ----
+alias code="nvim ."
 alias cl="clear"
 
-# ----  Config ----
-alias edit-zsh="nvim ~/.zshrc"
-alias reload-zsh="source ~/.zshrc"
+# Go
+alias grun="go run main.go"
+alias gbuild="go build ./..."
 
-# ----  Ghostty ----
-alias ghostty-config='nvim ~/Library/Application\ Support/com.mitchellh.ghostty/config'
+# Docker
+alias dcup="docker compose up -d"
+alias dcstop="docker compose stop"
+alias dlog="docker logs -f"
+alias lzd="lazydocker"
 
-# ----  Clean history (deduplicate safely) ----
-alias clean-history='cp ~/.zsh_history ~/.zsh_history.bak && awk -F ";" "!seen[$2]++" ~/.zsh_history > ~/.zsh_history_clean && mv ~/.zsh_history_clean ~/.zsh_history && fc -R ~/.zsh_history'
-
-# ----  eza (modern ls) ----
+# eza
 if command -v eza &> /dev/null; then
   alias l="eza -l --icons --git -a"
   alias lt="eza --tree --level=2 --long --icons --git"
@@ -150,38 +162,47 @@ else
   alias l="ls -lah"
 fi
 
-# =========================================================
-#  FZF (fuzzy finder)
-# =========================================================
-[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+# Config
+alias edit-zsh="nvim ~/.zshrc"
+alias reload-zsh="source ~/.zshrc"
 
 # =========================================================
-#  Smart Navigation
+#  DEV COCKPIT (tmux automation)
 # =========================================================
-eval "$(zoxide init zsh)"
+dev() {
+  tmux has-session -t dev 2>/dev/null
+
+  if [ $? != 0 ]; then
+    tmux new-session -d -s dev -n code
+    tmux send-keys -t dev 'cd ~/projects && nvim .' C-m
+
+    tmux split-window -h -t dev
+    tmux send-keys -t dev 'grun' C-m
+
+    tmux split-window -v -t dev
+    tmux send-keys -t dev 'nu' C-m
+
+    tmux select-pane -t 0
+  fi
+
+  tmux attach -t dev
+}
 
 # =========================================================
-#  Atuin (advanced shell history)
-# =========================================================
-if command -v atuin &> /dev/null; then
-  eval "$(atuin init zsh --disable-up-arrow)"
-fi
-
-# =========================================================
-#  Load Environment Secrets (safe)
+#  Secrets
 # =========================================================
 [ -f "$HOME/.env_openai_cli" ] && source "$HOME/.env_openai_cli"
 [ -f "$HOME/.env_gemini_cli" ] && source "$HOME/.env_gemini_cli"
 
 # =========================================================
-#  Tmux Auto Attach (interactive only)
+# ⚡ Auto tmux attach
 # =========================================================
 if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [[ $- == *i* ]]; then
-  tmux attach -t andev0x || tmux new -s andev0x
+  tmux attach -t main || tmux new -s main
 fi
 
 # =========================================================
-#  Powerlevel10k Config
+#  Powerlevel10k
 # =========================================================
 [[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
