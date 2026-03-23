@@ -1,5 +1,5 @@
-# =======================================================# =========================================================
-# ⚡ Powerlevel10k Instant Prompt (must stay at top)
+# =======================================================
+# # ⚡ Powerlevel10k Instant Prompt (must stay at top)
 # =========================================================
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -147,6 +147,9 @@ alias cl="clear"
 # Go
 alias grun="go run main.go"
 alias gbuild="go build ./..."
+
+# Brew
+alias bup="brew update && brew upgrade && brew cleanup && brew doctor"
 
 # Docker
 alias dcup="docker compose up -d"
