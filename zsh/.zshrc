@@ -1,13 +1,17 @@
 # =========================================================
-# ⚡ Powerlevel10k Instant Prompt (MUST BE FIRST)
+# ⚡ Zsh Configuration - Fast, Clean & Productive (2026)
 # Author: andev0x
+# =========================================================
+
+# =========================================================
+# Powerlevel10k Instant Prompt (MUST BE FIRST)
 # =========================================================
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # =========================================================
-# Core Environment & PATH
+# Core Environment & Clean PATH
 # =========================================================
 export LANG="en_US.UTF-8"
 export EDITOR="nvim"
@@ -26,25 +30,27 @@ path=(
 export PATH
 
 # =========================================================
-# ⚡ Antidote Plugin Manager (Static Loading)
+# Antidote Plugin Manager
 # =========================================================
 ANTIDOTE_DIR="/opt/homebrew/opt/antidote/share/antidote"
 if [[ -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
   source "$ANTIDOTE_DIR/antidote.zsh"
+
   _static_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
   if [[ ! -f "$_static_plugins" || ~/.zsh_plugins.txt -nt "$_static_plugins" ]]; then
     antidote bundle < ~/.zsh_plugins.txt > "$_static_plugins"
   fi
   source "$_static_plugins"
 else
-  print -u2 "⚠️ Antidote not found (brew install antidote)"
+  print -u2 "⚠️ Antidote not found. Run: brew install antidote"
 fi
 
 # =========================================================
-# Toolchains (Go, Bun, Java, Android)
+# Toolchains
 # =========================================================
 export GOPATH="$HOME/go"
-[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
+export BUN_INSTALL="$HOME/.bun"
+[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 
 if command -v /usr/libexec/java_home &>/dev/null; then
   export JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null)
@@ -52,10 +58,13 @@ if command -v /usr/libexec/java_home &>/dev/null; then
 fi
 
 export ANDROID_HOME="$HOME/Library/Android/sdk"
-[[ -d "$ANDROID_HOME" ]] && path+=($ANDROID_HOME/platform-tools $ANDROID_HOME/emulator)
+[[ -d "$ANDROID_HOME" ]] && path+=(
+  $ANDROID_HOME/platform-tools
+  $ANDROID_HOME/emulator
+)
 
 # =========================================================
-# ⚡ Lazy Loaders (NVM / Ruby)
+# Lazy Loaders
 # =========================================================
 export NVM_DIR="$HOME/.nvm"
 nvm() {
@@ -63,10 +72,10 @@ nvm() {
   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
   nvm "$@"
 }
-node() { nvm && node "$@" }
-npm() { nvm && npm "$@" }
-npx() { nvm && npx "$@" }
-yarn() { nvm && yarn "$@" }
+node() { nvm && node "$@"; }
+npm()  { nvm && npm  "$@"; }
+npx()  { nvm && npx  "$@"; }
+yarn() { nvm && yarn "$@"; }
 
 rbenv() {
   unset -f rbenv
@@ -75,13 +84,14 @@ rbenv() {
 }
 
 # =========================================================
-# History (Secure + Clean)
+# History
 # =========================================================
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
-setopt INC_APPEND_HISTORY_TIME HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS
-setopt HIST_FIND_NO_DUPS HIST_REDUCE_BLANKS HIST_IGNORE_SPACE
+
+setopt INC_APPEND_HISTORY_TIME HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS \
+       HIST_FIND_NO_DUPS HIST_REDUCE_BLANKS HIST_IGNORE_SPACE
 
 zshaddhistory() {
   emulate -L zsh
@@ -90,44 +100,48 @@ zshaddhistory() {
 }
 
 # =========================================================
-# ⚡ Completions (Optimized)
+# Completions (rebuild once per day)
 # =========================================================
 autoload -Uz compinit && zmodload zsh/complist
-if [[ ! -f ~/.zcompdump || ~/.zcompdump -nt ~/.zshrc ]]; then
+if [[ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null || echo 0)" ]]; then
   compinit
 else
   compinit -C
 fi
 
 # =========================================================
-# ⚡ Lazy Init Tools
+# Lazy Tools
 # =========================================================
-# Zoxide
-z() { unfunction z; eval "$(zoxide init zsh)"; z "$@" }
+[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
 
-# Atuin (Fix: Trigger UI on first press)
+z() {
+  unfunction z
+  eval "$(zoxide init zsh)"
+  z "$@"
+}
+
 if command -v atuin &>/dev/null; then
   _atuin_lazy() {
     unfunction _atuin_lazy
     eval "$(atuin init zsh --disable-up-arrow)"
-    zle atuin-search # Trigger the UI immediately
+    zle atuin-search
   }
   zle -N atuin-search _atuin_lazy
   bindkey '^R' atuin-search
 fi
 
-[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
-
 # =========================================================
-# Aliases & Cockpit
+# Aliases
 # =========================================================
 alias vim="nvim" code="nvim ." cl="clear"
 alias edit-zsh="nvim ~/.zshrc"
-alias reload-zsh="exec zsh" # Cleanest way to reload
+alias reload-zsh="exec zsh"
 
 alias grun="go run main.go" gbuild="go build ./..."
 alias bup="brew update && brew upgrade && brew cleanup && brew doctor"
+
 alias dcup="docker compose up -d" dcstop="docker compose stop" dlog="docker logs -f"
+alias lzd="lazydocker"
 
 if command -v eza &>/dev/null; then
   alias l="eza -l --icons --git -a"
@@ -136,6 +150,11 @@ else
   alias l="ls -lah"
 fi
 
+alias nu-run='nu -c'
+nuj() { nu -c "from json | ($1)" }
+alias logs-json='docker logs | nu -c "from json"'
+
+# DEV Cockpit
 dev() {
   if ! tmux has-session -t dev 2>/dev/null; then
     tmux new-session -d -s dev -n code
@@ -150,26 +169,30 @@ dev() {
 }
 
 # =========================================================
-# ⚡ Auto Tmux (Interactive & Safe)
+# Auto Tmux
 # =========================================================
 if [[ $- == *i* && -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
   if command -v tmux &>/dev/null && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-    tmux new -A -s andev0x
+    tmux new -A -s andev0x 2>/dev/null || true
   fi
 fi
 
 # =========================================================
-# Prompt & Visuals (End of file)
+# Powerlevel10k + Substring Search
 # =========================================================
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-# History Substring Search (Bind arrow keys)
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+
 export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=magenta,fg=white,bold'
 export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='bg=red,fg=white,bold'
 
+# =========================================================
 # Secrets
+# =========================================================
 [[ -f "$HOME/.env_openai_cli" ]] && source "$HOME/.env_openai_cli"
 [[ -f "$HOME/.env_gemini_cli" ]] && source "$HOME/.env_gemini_cli"
 

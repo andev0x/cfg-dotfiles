@@ -1,8 +1,7 @@
 # =========================================================
-#  ZSH Plugins Config (for Antidote)
+# Zsh Plugins for Antidote (Final - Keep both Atuin + Substring)
 # =========================================================
 
-# 1. Oh My Zsh base libraries (Essential logic)
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:lib/history.zsh
 ohmyzsh/ohmyzsh path:lib/completion.zsh
@@ -11,20 +10,13 @@ ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/web-search
 ohmyzsh/ohmyzsh path:plugins/extract
 
-# 2. Powerlevel10k Prompt
-romkatv/powerlevel10k
-
-# 3. Core Zsh functionality
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
-
-# 4. FZF Tab (Must be after compinit - handled by antidote order)
 Aloxaf/fzf-tab
 
-# 5. History Search (Matches your arrow-key config)
+# History substring search
 zsh-users/zsh-history-substring-search
 
-# 6. Syntax Highlighting (Must be ABSOLUTELY LAST)
-# This ensures even your aliases are colored correctly
+# Syntax highlighting
 zsh-users/zsh-syntax-highlighting
-sh-users/zsh-syntax-highlighting
+
