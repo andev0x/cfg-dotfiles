@@ -1,0 +1,2 @@
+source $nu.config-path
+$nu.history-path
