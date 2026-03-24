@@ -1,0 +1,109 @@
+
+# $schema = 'https://starship.rs/config-schema.json'
+
+# =========================================================
+# GLOBAL SETTINGS - Performance First
+# =========================================================
+add_newline = false
+command_timeout = 800
+scan_timeout = 50
+
+# Disable heavy or unused modules
+[git_metrics]
+disabled = true
+[package]
+disabled = true
+[nodejs]
+disabled = true
+[ruby]
+disabled = true
+[python]
+disabled = true
+
+# =========================================================
+# MAIN FORMAT (Clean, modern, dev-focused)
+# =========================================================
+format = """
+$directory$git_branch$git_status$cmd_duration$character
+"""
+
+# =========================================================
+# DIRECTORY
+# =========================================================
+[directory]
+style = "bold cyan"
+truncation_length = 3
+truncate_to_repo = true
+read_only = " 🔒"
+read_only_style = "bold red"
+
+# =========================================================
+# GIT
+# =========================================================
+[git_branch]
+symbol = " "
+style = "bold purple"
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style)) '
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕"
+untracked = "?"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+conflicted = "!"
+
+# =========================================================
+# COMMAND DURATION (only show when slow)
+# =========================================================
+[cmd_duration]
+min_time = 500
+format = " ⏱️ [$duration](yellow) "
+
+# =========================================================
+# PROMPT CHARACTER
+# =========================================================
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+# =========================================================
+# SHELL INDICATOR
+# =========================================================
+[shell]
+disabled = false
+format = "[$indicator]($style) "
+style = "bold white"
+[shell.zsh]
+symbol = "zsh "
+[shell.nu]
+symbol = "nu "
+
+# =========================================================
+# CUSTOM MODULE - Detect Neovim
+# =========================================================
+[custom.nvim]
+command = "echo -n 'nvim'"
+when = ''' [[ -n $NVIM ]] || [[ -n $VIMRUNTIME ]] '''
+style = "bold green"
+format = "[ $output]($style) "
+
+# Optional modules (uncomment if you need them)
+[golang]
+symbol = " "
+style = "bold cyan"
+
+[bun]
+symbol = "🍞 "
+style = "bold yellow"
+
+[time]
+disabled = false
+format = "[$time]($style) "
+style = "dimmed white"
+time_format = "%H:%M"

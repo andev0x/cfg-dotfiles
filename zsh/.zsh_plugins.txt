@@ -1,0 +1,27 @@
+
+# =========================================================
+#  ZSH Plugins Config (for Antidote)
+# =========================================================
+
+# 1. Oh My Zsh base libraries (essential only)
+getantidote/use-omz
+ohmyzsh/ohmyzsh path:lib/history.zsh
+ohmyzsh/ohmyzsh path:lib/completion.zsh
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/web-search
+
+# 2. Powerlevel10k Prompt
+romkatv/powerlevel10k
+
+# 3. Core Zsh functionality
+zsh-users/zsh-completions
+zsh-users/zsh-autosuggestions
+
+# 4. FZF Tab (must be before syntax highlighting)
+Aloxaf/fzf-tab
+
+# 5. History Search
+zsh-users/zsh-history-substring-search
+
+# 6. Syntax Highlighting (must be ABSOLUTELY LAST)
+zsh-users/zsh-syntax-highlighting
