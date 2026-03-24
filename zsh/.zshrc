@@ -1,21 +1,23 @@
-# =======================================================
-# # ⚡ Powerlevel10k Instant Prompt (must stay at top)
+=============# =========================================================
+# ⚡ Powerlevel10k Instant Prompt (must stay at top)
 # =========================================================
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 # =========================================================
 #  Core Environment
 # =========================================================
 export LANG="en_US.UTF-8"
 export EDITOR="nvim"
+export PATH="/opt/homebrew/bin:$PATH"
 
 # =========================================================
 # ⚡ Oh My Zsh
 # =========================================================
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME=""
 
 plugins=(
   git
@@ -110,7 +112,7 @@ zshaddhistory() {
 # ⚡ FZF + Completion
 # =========================================================
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
-autoload -Uz compinit && compinit
+autoload -Uz compinit && compinit -C
 [ -f ~/.fzf-tab.zsh ] && source ~/.fzf-tab.zsh
 
 # =========================================================
@@ -132,7 +134,7 @@ fi
 alias nu-run='nu -c'
 
 nuj() {
-  nu -c "from json | $1"
+    nu -c "from json | ($1)"
 }
 
 alias logs-json='docker logs | nu -c "from json"'
@@ -173,9 +175,7 @@ alias reload-zsh="source ~/.zshrc"
 #  DEV COCKPIT (tmux automation)
 # =========================================================
 dev() {
-  tmux has-session -t dev 2>/dev/null
-
-  if [ $? != 0 ]; then
+  if ! tmux has-session -t dev 2>/dev/null; then
     tmux new-session -d -s dev -n code
     tmux send-keys -t dev 'cd ~/projects && nvim .' C-m
 
@@ -200,12 +200,16 @@ dev() {
 # =========================================================
 # ⚡ Auto tmux attach
 # =========================================================
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [[ $- == *i* ]]; then
-  tmux attach -t andev0x || tmux new -s andev0x
+if command -v tmux &> /dev/null && [[ $- == *i* ]] && [ -z "$TMUX" ]; then
+  tmux new -A -s andev0x
 fi
 
 # =========================================================
 #  Powerlevel10k
 # =========================================================
-[[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+# [[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
+# =========================================================
+#  Starship
+# =========================================================
+eval "$(starship init zsh)"

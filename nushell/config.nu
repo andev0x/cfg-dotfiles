@@ -1,4 +1,3 @@
-
 # =========================================================
 # ⚡ Environment
 # =========================================================
@@ -129,3 +128,6 @@ def myip [] {
 #  STARTUP MESSAGE (optional)
 # =========================================================
 print $"(ansi green)Nushell ready 🚀(ansi reset)"
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+
