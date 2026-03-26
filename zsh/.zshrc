@@ -30,7 +30,7 @@ path=(
 export PATH
 
 # =========================================================
-# Antidote Plugin Manager
+# Antidote Plugin Manager (Static Loading)
 # =========================================================
 ANTIDOTE_DIR="/opt/homebrew/opt/antidote/share/antidote"
 if [[ -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
@@ -84,7 +84,7 @@ rbenv() {
 }
 
 # =========================================================
-# History
+# History - Secure & Optimized
 # =========================================================
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=100000
@@ -114,12 +114,14 @@ fi
 # =========================================================
 [[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
 
+# Zoxide - lazy load on first use
 z() {
   unfunction z
   eval "$(zoxide init zsh)"
   z "$@"
 }
 
+# Atuin - lazy on Ctrl+R
 if command -v atuin &>/dev/null; then
   _atuin_lazy() {
     unfunction _atuin_lazy
@@ -136,11 +138,15 @@ fi
 alias vim="nvim" code="nvim ." cl="clear"
 alias edit-zsh="nvim ~/.zshrc"
 alias reload-zsh="exec zsh"
+alias ghostty-config='nvim ~/Library/Application\ Support/com.mitchellh.ghostty/config.ghostty'
+
 
 alias grun="go run main.go" gbuild="go build ./..."
 alias bup="brew update && brew upgrade && brew cleanup && brew doctor"
 
-alias dcup="docker compose up -d" dcstop="docker compose stop" dlog="docker logs -f"
+alias dcup="docker compose up -d"
+alias dcstop="docker compose stop"
+alias dlog="docker logs -f"
 alias lzd="lazydocker"
 
 if command -v eza &>/dev/null; then
@@ -150,6 +156,7 @@ else
   alias l="ls -lah"
 fi
 
+# Nushell helpers
 alias nu-run='nu -c'
 nuj() { nu -c "from json | ($1)" }
 alias logs-json='docker logs | nu -c "from json"'
@@ -169,7 +176,7 @@ dev() {
 }
 
 # =========================================================
-# Auto Tmux
+# Auto Tmux (Safe)
 # =========================================================
 if [[ $- == *i* && -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
   if command -v tmux &>/dev/null && [[ "$TERM_PROGRAM" != "vscode" ]]; then
@@ -178,15 +185,17 @@ if [[ $- == *i* && -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
 fi
 
 # =========================================================
-# Powerlevel10k + Substring Search
+# Powerlevel10k + History Substring Search
 # =========================================================
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
+# Substring search with arrow keys (works in both normal and application mode)
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
+# Highlight colors
 export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bg=magenta,fg=white,bold'
 export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='bg=red,fg=white,bold'
 
