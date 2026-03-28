@@ -1,50 +1,57 @@
-
+# =========================
+# Pull Request Sections
+# Priority-based workflow
+# =========================
 prSections:
-  - title: My Pull Requests
+  - title: Needs My Review
+    filters: is:open review-requested:@me draft:false
+
+  - title: My Active PRs
     filters: is:open author:@me draft:false
 
-  - title: Needs My Review
-    filters: is:open review-requested:@me -reviewed-by:@me draft:false
-
-  - title: Involved
-    filters: is:open involves:@me -author:@me draft:false
-
   - title: Ready to Merge
-    filters: is:open review:approved draft:false
+    filters: is:open review:approved status:success draft:false
 
-  - title: Stale PRs
-    filters: is:open updated:<7d draft:false
+  - title: Following
+    filters: is:open involves:@me -author:@me -review-requested:@me
 
+# =========================
+# Issue Sections
+# Actionable grouping
+# =========================
 issuesSections:
-  - title: My Issues
-    filters: is:open author:@me
-
-  - title: Assigned
+  - title: Assigned to Me
     filters: is:open assignee:@me
-
-  - title: Involved
-    filters: is:open involves:@me -author:@me
 
   - title: High Priority
     filters: is:open label:priority-high
 
+  - title: Watching
+    filters: is:open involves:@me -assignee:@me
+
+# =========================
+# Notifications
+# Reduced noise
+# =========================
 notificationsSections:
-  - title: Review Requested
-    filters: reason:review-requested
+  - title: Important
+    filters: reason:review-requested,mention,assign
 
-  - title: Mentioned
-    filters: reason:mention
-
-  - title: Assigned
-    filters: reason:assign
-
-  - title: Participating
+  - title: Other
     filters: reason:participating
 
+# =========================
+# Repo refresh settings
+# Faster PR updates
+# =========================
 repo:
   branchesRefetchIntervalSeconds: 60
-  prsRefetchIntervalSeconds: 120
+  prsRefetchIntervalSeconds: 60
+  issuesRefetchIntervalSeconds: 120
 
+# =========================
+# Defaults
+# =========================
 defaults:
   preview:
     open: true
@@ -65,9 +72,9 @@ defaults:
       createdAt:
         width: 5
       repo:
-        width: 20
+        width: 16
       author:
-        width: 12
+        width: 10
       authorIcon:
         hidden: false
       assignees:
@@ -75,7 +82,7 @@ defaults:
       base:
         hidden: true
       lines:
-        width: 10
+        width: 8
 
     issues:
       updatedAt:
@@ -83,7 +90,7 @@ defaults:
       createdAt:
         width: 5
       repo:
-        width: 18
+        width: 16
       creator:
         width: 10
       creatorIcon:
@@ -93,6 +100,10 @@ defaults:
 
   refetchIntervalMinutes: 30
 
+# =========================
+# Keybindings
+# Workflow optimized
+# =========================
 keybindings:
   universal:
     - key: g
@@ -104,6 +115,11 @@ keybindings:
       name: open in browser
       command: >
         gh pr view {{.PrNumber}} --web || gh issue view {{.IssueNumber}} --web
+
+    - key: y
+      name: copy PR url
+      command: >
+        gh pr view {{.PrNumber}} --json url -q .url | pbcopy
 
   prs:
     - key: c
@@ -121,6 +137,11 @@ keybindings:
       command: >
         gh pr diff {{.PrNumber}} | ${PAGER:-less}
 
+    - key: d
+      name: diff in nvim
+      command: >
+        gh pr diff {{.PrNumber}} | nvim -R -
+
     - key: a
       name: approve PR
       command: >
@@ -131,12 +152,20 @@ keybindings:
       command: >
         gh pr review {{.PrNumber}} --request-changes -b "Please address feedback"
 
+    - key: R
+      name: rebase PR
+      command: >
+        gh pr checkout {{.PrNumber}} && git pull --rebase origin main
+
   issues:
     - key: c
-      name: checkout branch (if exists)
+      name: view issue
       command: >
         gh issue view {{.IssueNumber}}
 
+# =========================
+# UI / Theme
+# =========================
 theme:
   ui:
     sectionsShowCount: true
@@ -144,10 +173,17 @@ theme:
       showSeparator: true
       compact: true
 
+# =========================
+# Pager
+# =========================
 pager:
   diff: "delta"
 
+# =========================
+# General behavior
+# =========================
 confirmQuit: false
 showAuthorIcons: true
 smartFilteringAtLaunch: true
 includeReadNotifications: false
+
