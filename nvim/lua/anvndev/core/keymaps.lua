@@ -11,8 +11,8 @@ keymap("n", "<Esc>", ":nohl<CR>", { desc = "Clear search highlights" })
 -- Copy path of current file to clipboard
 keymap("n", "<leader>yp", ':let @+ = expand("%:p")<CR>', { desc = "Copy File Name of Current File" })
 
--- Remove extra comment characters in the first line
-keymap("n", "<leader>//", ":'<,'>s#^s*//s*##g<CR>", { desc = "Remove extra comment characters in the first line" })
+-- Remove leading // comment markers on current line
+keymap("n", "<leader>u/", "<cmd>s#^\\s*//\\s*##<CR>", { desc = "Uncomment slash prefix" })
 
 -- Window navigation
 keymap("n", "<C-h>", "<C-w>h", { desc = "Navigate to left window" })
@@ -29,7 +29,7 @@ keymap("n", "<leader>L", ":vertical resize +2<CR>", { desc = "Increase window wi
 -- Buffer navigation
 keymap("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-h>", ":bprevious<CR>", { desc = "Previous buffer" })
-keymap("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer" })
+keymap("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
 
 -- Move text up and down
 keymap("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
@@ -65,81 +65,20 @@ keymap("n", "<leader>fp", ":Telescope projects<CR>", { desc = "Projects" })
 keymap("n", "<leader>fe", ":Telescope file_browser<CR>", { desc = "File browser" })
 
 -- Git (Telescope)
-keymap("n", "<leader>gc", ":Telescope git_commits<CR>", { desc = "Git commits" })
-keymap("n", "<leader>gs", ":Telescope git_status<CR>", { desc = "Git status" })
-keymap("n", "<leader>gb", ":Telescope git_branches<CR>", { desc = "Git branches" })
+keymap("n", "<leader>fgc", ":Telescope git_commits<CR>", { desc = "Git commits" })
+keymap("n", "<leader>fgs", ":Telescope git_status<CR>", { desc = "Git status" })
+keymap("n", "<leader>fgb", ":Telescope git_branches<CR>", { desc = "Git branches" })
 
 -- LSP (Diagnostics)
 -- Ensure this does not conflict with Debug mappings (<leader>d...)
 keymap("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line diagnostics" })
-keymap("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-keymap("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+keymap("n", "[d", function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = "Previous diagnostic" })
+keymap("n", "]d", function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = "Next diagnostic" })
 keymap("n", "<leader>lq", vim.diagnostic.setloclist, { desc = "Diagnostics list" })
-
--- Debugging (DAP)
--- Using safer pcall to avoid errors if DAP is not loaded
-keymap("n", "<leader>db", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.toggle_breakpoint()
-	end
-end, { desc = "Toggle breakpoint" })
-
-keymap("n", "<leader>dc", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.continue()
-	end
-end, { desc = "Continue" })
-
-keymap("n", "<leader>di", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.step_into()
-	end
-end, { desc = "Step into" })
-
-keymap("n", "<leader>do", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.step_over()
-	end
-end, { desc = "Step over" })
-
-keymap("n", "<leader>dO", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.step_out()
-	end
-end, { desc = "Step out" })
-
-keymap("n", "<leader>dr", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap and dap.repl then
-		pcall(dap.repl.toggle, dap.repl)
-	end
-end, { desc = "Toggle REPL" })
-
-keymap("n", "<leader>dl", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.run_last()
-	end
-end, { desc = "Run last" })
-
-keymap("n", "<leader>du", function()
-	local ok, ui = pcall(require, "dapui")
-	if ok and ui then
-		ui.toggle()
-	end
-end, { desc = "Toggle DAP UI" })
-
-keymap("n", "<leader>dt", function()
-	local ok, dap = pcall(require, "dap")
-	if ok and dap then
-		dap.terminate()
-	end
-end, { desc = "Terminate" })
 
 -- Terminal
 keymap("n", "<leader>tt", ":ToggleTerm<CR>", { desc = "Toggle terminal" })

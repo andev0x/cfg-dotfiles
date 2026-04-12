@@ -135,7 +135,7 @@ fi
 # =========================================================
 # Aliases
 # =========================================================
-alias vim="nvim" code="nvim ." cl="clear"
+alias vim="nvim" cl="clear"
 alias edit-zsh="nvim ~/.zshrc"
 alias reload-zsh="exec zsh"
 alias ghostty-config='nvim ~/Library/Application\ Support/com.mitchellh.ghostty/config.ghostty'
@@ -164,7 +164,7 @@ alias logs-json='docker logs | nu -c "from json"'
 # DEV Cockpit
 dev() {
   if ! tmux has-session -t dev 2>/dev/null; then
-    tmux new-session -d -s dev -n code
+    tmux new-session -d -s dev -n coding
     tmux send-keys -t dev 'cd ~/projects && nvim .' C-m
     tmux split-window -h -t dev
     tmux send-keys -t dev 'grun' C-m
@@ -178,8 +178,8 @@ dev() {
 # =========================================================
 # Auto Tmux (Safe)
 # =========================================================
-if [[ $- == *i* && -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
-  if command -v tmux &>/dev/null && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+if [[ $- == *i* && -z "$TMUX" && -z "$SSH_CONNECTION" && -z "$VSCODE_PID" ]]; then
+  if command -v tmux &>/dev/null; then
     tmux new -A -s andev0x 2>/dev/null || true
   fi
 fi
