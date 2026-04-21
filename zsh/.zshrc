@@ -121,6 +121,7 @@ z() {
   z "$@"
 }
 
+
 # Atuin - lazy on Ctrl+R
 if command -v atuin &>/dev/null; then
   _atuin_lazy() {
@@ -135,7 +136,7 @@ fi
 # =========================================================
 # Aliases
 # =========================================================
-alias vim="nvim" cl="clear"
+alias v="nvim" cl="clear"
 alias edit-zsh="nvim ~/.zshrc"
 alias reload-zsh="exec zsh"
 alias ghostty-config='nvim ~/Library/Application\ Support/com.mitchellh.ghostty/config.ghostty'
