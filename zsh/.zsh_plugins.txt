@@ -1,24 +1,23 @@
+
 # =========================================================
-# Zsh Plugins for Antidote (Final - Keep both Atuin + Substring)
+# Antidote Plugin List (Optimized for Starship)
 # =========================================================
 
-getantidote/use-omz
-ohmyzsh/ohmyzsh path:lib/history.zsh
-ohmyzsh/ohmyzsh path:lib/completion.zsh
-ohmyzsh/ohmyzsh path:lib/key-bindings.zsh
-ohmyzsh/ohmyzsh path:plugins/git
-ohmyzsh/ohmyzsh path:plugins/web-search
-ohmyzsh/ohmyzsh path:plugins/extract
+# --- Core UX plugins (must-have) ---
 
-romkatv/powerlevel10k
-
-zsh-users/zsh-completions
+# Autosuggestions (fish-like suggestions while typing)
 zsh-users/zsh-autosuggestions
-Aloxaf/fzf-tab
 
-# History substring search
-zsh-users/zsh-history-substring-search
-
-# Syntax highlighting
+# Syntax highlighting (commands, errors, etc.)
 zsh-users/zsh-syntax-highlighting
 
+# Better tab completion with fzf UI
+Aloxaf/fzf-tab
+
+# --- Optional (enable ONLY if needed) ---
+
+# Extra completions for uncommon CLI tools
+# zsh-users/zsh-completions
+
+# History substring search (ONLY if NOT using Atuin)
+# zsh-users/zsh-history-substring-search
