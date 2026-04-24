@@ -83,3 +83,20 @@ case "$(uname -s)" in
     printf 'n/a\n'
     ;;
 esac
+
+# ---------- CACHE LAYER ----------
+CACHE="/tmp/tmux_cpu_cache"
+TTL=2
+
+now=$(date +%s)
+
+if [ -f "$CACHE" ]; then
+  last=$(stat -f %m "$CACHE" 2>/dev/null || stat -c %Y "$CACHE" 2>/dev/null)
+  if [ -n "$last" ] && [ $((now - last)) -lt "$TTL" ]; then
+    cat "$CACHE"
+    exit 0
+  fi
+fi
+
+# write cache safely
+echo "$val" > "$CACHE"
