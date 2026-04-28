@@ -1,0 +1,114 @@
+
+# =========================================================
+# ATUIN CONFIG — OPTIMIZED FOR DEV WORKFLOW
+# =========================================================
+
+# ------------------------
+# SEARCH BEHAVIOR
+# ------------------------
+
+# Use fuzzy search for flexible matching
+search_mode = "fuzzy"
+
+# Default filter mode:
+# "workspace" = all commands inside current git repo (BEST for dev)
+filter_mode = "workspace"
+
+# Enable workspace detection (git root awareness)
+workspaces = true
+
+# Prioritize filters in this order
+# 1. workspace (current repo)
+# 2. directory (current folder)
+# 3. global (everything)
+[search]
+filters = ["workspace", "directory", "global"]
+
+
+# ------------------------
+# UP ARROW BEHAVIOR (CRITICAL UX)
+# ------------------------
+
+# Make ↑ behave like smart history (prefix match like Zsh)
+search_mode_shell_up_key_binding = "prefix"
+
+# Keep it scoped to current workspace (repo-aware)
+filter_mode_shell_up_key_binding = "workspace"
+
+
+# ------------------------
+# UI / UX (CLEAN + FAST)
+# ------------------------
+
+# Minimal UI (less noise, faster scanning)
+style = "compact"
+
+# Limit height so it doesn't take over the screen
+inline_height = 20
+
+# Disable preview (faster + cleaner)
+show_preview = false
+
+# Hide help line (less clutter)
+show_help = false
+
+# Reduce UI motion (better for tmux performance)
+prefers_reduced_motion = true
+
+
+# ------------------------
+# EXECUTION BEHAVIOR
+# ------------------------
+
+# Press Enter to immediately execute selected command
+# (Tab to edit instead)
+enter_accept = true
+
+
+# ------------------------
+# SECURITY / PRIVACY
+# ------------------------
+
+# Extra filtering for sensitive commands
+history_filter = [
+  ".*token.*",
+  ".*secret.*",
+  ".*password.*"
+]
+
+# Built-in secret filtering (keep enabled)
+secrets_filter = true
+
+
+# ------------------------
+# STATS (OPTIONAL BUT USEFUL)
+# ------------------------
+
+[stats]
+
+# Track subcommands for better insights
+# (useful for git, docker, tmux workflows)
+common_subcommands = [
+  "git",
+  "docker",
+  "tmux",
+  "go",
+  "kubectl"
+]
+
+
+# ------------------------
+# OPTIONAL PERFORMANCE TWEAKS
+# ------------------------
+
+# Reduce database lock wait time (snappier feel)
+local_timeout = 3
+
+
+# ------------------------
+# SYNC (OPTIONAL — DISABLE IF LOCAL ONLY)
+# ------------------------
+
+# Disable auto sync if you don't use Atuin cloud
+auto_sync = true
+sync_frequency = "1m"

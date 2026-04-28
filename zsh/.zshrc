@@ -1,11 +1,12 @@
 # =========================================================
-# ⚡ Zsh Configuration - Fast, Clean & Productive (2026)
-# Author: andev0x (optimized)
-# =========================================================
+# ZSH CONFIG — FINAL (FAST + CLEAN + TMUX OPTIMIZED)
+# ==============================================================
 
-# =========================================================
-# Core Environment & Clean PATH
-# =========================================================
+
+# ========================
+# 1. CORE ENVIRONMENT
+# ========================
+
 export LANG="en_US.UTF-8"
 export EDITOR="nvim"
 
@@ -23,34 +24,38 @@ path=(
 )
 export PATH
 
-# =========================================================
-# Antidote Plugin Manager (Static Loading)
-# =========================================================
+
+# ========================
+# 2. ANTIDOTE (STATIC LOAD)
+# ========================
+
 ANTIDOTE_DIR="/opt/homebrew/opt/antidote/share/antidote"
 
 if [[ -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
   source "$ANTIDOTE_DIR/antidote.zsh"
 
-  # Generate static plugin bundle if needed
   _static_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
+
+  # Regenerate plugin bundle only when needed
   if [[ ! -f "$_static_plugins" || ~/.zsh_plugins.txt -nt "$_static_plugins" ]]; then
     antidote bundle < ~/.zsh_plugins.txt > "$_static_plugins"
   fi
 
-  # Load plugins
   source "$_static_plugins"
 else
-  print -u2 "⚠️ Antidote not found. Run: brew install antidote"
+  print -u2 "Antidote not found. Install with: brew install antidote"
 fi
 
-# =========================================================
-# Toolchains
-# =========================================================
+
+# ========================
+# 3. TOOLCHAINS
+# ========================
+
 export GOPATH="$HOME/go"
 export BUN_INSTALL="$HOME/.bun"
 [[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 
-# Java (lazy safe setup)
+# Java (safe detection)
 if command -v /usr/libexec/java_home &>/dev/null; then
   export JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null)
   [[ -n "$JAVA_HOME" ]] && path+=($JAVA_HOME/bin)
@@ -63,17 +68,20 @@ export ANDROID_HOME="$HOME/Library/Android/sdk"
   $ANDROID_HOME/emulator
 )
 
-# =========================================================
-# Lazy Loaders (Performance Optimization)
-# =========================================================
+
+# ========================
+# 4. LAZY LOADERS
+# ========================
 
 # --- Node (nvm lazy load) ---
 export NVM_DIR="$HOME/.nvm"
+
 nvm() {
   unset -f nvm node npm npx yarn pnpm
   [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
   nvm "$@"
 }
+
 node() { nvm && node "$@"; }
 npm()  { nvm && npm  "$@"; }
 npx()  { nvm && npx  "$@"; }
@@ -86,9 +94,11 @@ rbenv() {
   rbenv "$@"
 }
 
-# =========================================================
-# History (Secure & Optimized)
-# =========================================================
+
+# ========================
+# 5. HISTORY (SECURE + FAST)
+# ========================
+
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
@@ -96,40 +106,45 @@ SAVEHIST=100000
 setopt INC_APPEND_HISTORY_TIME HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS \
        HIST_FIND_NO_DUPS HIST_REDUCE_BLANKS HIST_IGNORE_SPACE
 
-# Prevent sensitive data from being stored
+# Prevent sensitive commands from being stored
 zshaddhistory() {
   emulate -L zsh
   [[ "$1" == *"password"* || "$1" == *"secret"* || "$1" == *"token"* ]] && return 1
   return 0
 }
 
-# =========================================================
-# Completions (Optimized rebuild)
-# =========================================================
+
+# ========================
+# 6. COMPLETION (CACHED)
+# ========================
+
 autoload -Uz compinit && zmodload zsh/complist
 
-# Rebuild completion dump once per day
+# Rebuild completion cache once per day
 if [[ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null || echo 0)" ]]; then
   compinit
 else
   compinit -C
 fi
 
-# =========================================================
-# Lazy Tools
-# =========================================================
 
-# fzf (if installed)
+# ========================
+# 7. LAZY TOOLS
+# ========================
+
+# fzf
 [[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
+# Remove fzf default history binding (avoid conflict with atuin)
+bindkey -r '^R'
 
-# zoxide (lazy load on first use)
+# zoxide (lazy)
 z() {
   unfunction z
   eval "$(zoxide init zsh)"
   z "$@"
 }
 
-# Atuin (lazy load on Ctrl+R)
+# atuin (lazy on Ctrl+R)
 if command -v atuin &>/dev/null; then
   _atuin_lazy() {
     unfunction _atuin_lazy
@@ -140,9 +155,32 @@ if command -v atuin &>/dev/null; then
   bindkey '^R' atuin-search
 fi
 
-# =========================================================
-# Aliases
-# =========================================================
+
+# ========================
+# 8. TMUX GIT SYNC (IMPORTANT)
+# ========================
+
+# Update tmux git cache on directory change
+update_tmux_git() {
+  ~/.config/tmux/scripts/git-update.sh "$PWD" &!
+
+  # Force tmux to refresh status line immediately
+  if [[ -n "$TMUX" ]]; then
+    tmux refresh-client -S >/dev/null 2>&1
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd update_tmux_git
+
+# Run once on shell start
+update_tmux_git
+
+
+# ========================
+# 9. ALIASES
+# ========================
+
 alias v="nvim"
 alias cl="clear"
 
@@ -177,9 +215,11 @@ alias nu-run='nu -c'
 nuj() { nu -c "from json | ($1)" }
 alias logs-json='docker logs | nu -c "from json"'
 
-# =========================================================
-# DEV Cockpit (tmux workspace)
-# =========================================================
+
+# ========================
+# 10. DEV WORKSPACE (TMUX)
+# ========================
+
 dev() {
   if ! tmux has-session -t dev 2>/dev/null; then
     tmux new-session -d -s dev -n coding
@@ -193,23 +233,42 @@ dev() {
   tmux attach -t dev
 }
 
-# =========================================================
-# Auto Tmux (Safe attach)
-# =========================================================
+
+# ========================
+# 11. AUTO TMUX ATTACH
+# ========================
+
 if [[ $- == *i* && -z "$TMUX" && -z "$SSH_CONNECTION" && -z "$VSCODE_PID" ]]; then
   if command -v tmux &>/dev/null; then
     tmux new -A -s andev0x 2>/dev/null || true
   fi
 fi
 
-# =========================================================
-# Secrets (optional)
-# =========================================================
+
+# ========================
+# 12. SECRETS (OPTIONAL)
+# ========================
+
 [[ -f "$HOME/.env_openai_cli" ]] && source "$HOME/.env_openai_cli"
 [[ -f "$HOME/.env_gemini_cli" ]] && source "$HOME/.env_gemini_cli"
 
-# =========================================================
-# Starship Prompt (MUST BE LAST)
-# =========================================================
-eval "$(starship init zsh)"
+
+export OPENCODE_API_BASE="http://localhost:11434/v1"
+
+export OPENCODE_MODEL="deepseek-coder-v2:16b-lite-instruct-q4_K_M"
+
+export OPENCODE_API_KEY="ollama"
+
+# ========================
+# 13. PANESHIP
+# ========================
+#source ~/.config/paneship/paneship.zsh
+
+eval "$(paneship init zsh)"
+
+# ========================
+# 14. STARSHIP (LAST)
+# ========================
+
+# eval "$(starship init zsh)"
 
