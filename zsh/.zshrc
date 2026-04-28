@@ -135,7 +135,7 @@ fi
 # fzf
 [[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
 # Remove fzf default history binding (avoid conflict with atuin)
-bindkey -r '^R'
+# bindkey -r '^R'
 
 # zoxide (lazy)
 z() {
@@ -152,7 +152,7 @@ if command -v atuin &>/dev/null; then
     zle atuin-search
   }
   zle -N atuin-search _atuin_lazy
-  bindkey '^R' atuin-search
+  bindkey '^F' atuin-search
 fi
 
 

@@ -1,4 +1,3 @@
-
 # =========================================================
 # ATUIN CONFIG — OPTIMIZED FOR DEV WORKFLOW
 # =========================================================
@@ -12,7 +11,7 @@ search_mode = "fuzzy"
 
 # Default filter mode:
 # "workspace" = all commands inside current git repo (BEST for dev)
-filter_mode = "workspace"
+filter_mode = "global"
 
 # Enable workspace detection (git root awareness)
 workspaces = true
@@ -47,7 +46,7 @@ style = "compact"
 inline_height = 20
 
 # Disable preview (faster + cleaner)
-show_preview = false
+show_preview = true
 
 # Hide help line (less clutter)
 show_help = false
@@ -112,3 +111,4 @@ local_timeout = 3
 # Disable auto sync if you don't use Atuin cloud
 auto_sync = true
 sync_frequency = "1m"
+
