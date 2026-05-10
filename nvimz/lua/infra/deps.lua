@@ -30,7 +30,7 @@ function M.setup()
 	end)
 
 	later(function()
-		add({ source = "David-Kunz/gen.nvim" })
+		add({ source = "Robitx/gp.nvim" })
 		require("plugins.ai").setup()
 	end)
 

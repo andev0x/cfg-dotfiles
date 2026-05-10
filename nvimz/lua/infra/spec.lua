@@ -1,38 +1,42 @@
 local M = {}
 
+M.lsp_icons = {
+	gopls = " ",
+	pyright = " ",
+	ts_ls = " ",
+	rust_analyzer = " ",
+	terraformls = "󱁢 ",
+	yamlls = " ",
+	lua_ls = " ",
+}
+
 M.lsp_servers = {
-	{
-		name = "gopls",
+	gopls = {
 		cmd = { "gopls" },
 		filetypes = { "go", "gomod", "gowork", "gotmpl" },
 		root_markers = { "go.work", "go.mod", ".git" },
 	},
-	{
-		name = "pyright",
+	pyright = {
 		cmd = { "pyright-langserver", "--stdio" },
 		filetypes = { "python" },
 		root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
 	},
-	{
-		name = "ts_ls",
+	ts_ls = {
 		cmd = { "typescript-language-server", "--stdio" },
 		filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 		root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
 	},
-	{
-		name = "rust_analyzer",
+	rust_analyzer = {
 		cmd = { "rust-analyzer" },
 		filetypes = { "rust" },
 		root_markers = { "Cargo.toml", "rust-toolchain", "rust-toolchain.toml", ".git" },
 	},
-	{
-		name = "terraformls",
+	terraformls = {
 		cmd = { "terraform-ls", "serve" },
 		filetypes = { "terraform", "terraform-vars", "hcl" },
 		root_markers = { ".terraform", ".git" },
 	},
-	{
-		name = "yamlls",
+	yamlls = {
 		cmd = { "yaml-language-server", "--stdio" },
 		filetypes = { "yaml" },
 		root_markers = { ".git" },
@@ -78,7 +82,7 @@ end
 function M.required_binaries()
 	local bins = { "git", "rg", "fd" }
 
-	for _, server in ipairs(M.lsp_servers) do
+	for name, server in pairs(M.lsp_servers) do
 		table.insert(bins, server.cmd[1])
 	end
 
