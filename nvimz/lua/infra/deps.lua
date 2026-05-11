@@ -5,8 +5,6 @@ function M.setup()
 	local later = MiniDeps.later
 
 	later(function()
-		add({ source = "williamboman/mason.nvim" })
-		add({ source = "williamboman/mason-lspconfig.nvim" })
 		add({ source = "neovim/nvim-lspconfig" })
 		require("infra.lsp").setup()
 	end)
@@ -37,18 +35,6 @@ function M.setup()
 	later(function()
 		add({ source = "stevearc/conform.nvim" })
 		require("plugins.format").setup()
-	end)
-
-	later(function()
-		add({
-			source = "nvim-treesitter/nvim-treesitter",
-			hooks = {
-				post_checkout = function()
-					vim.cmd("TSUpdate")
-				end,
-			},
-		})
-		require("plugins.treesitter").setup()
 	end)
 end
 

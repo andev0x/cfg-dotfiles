@@ -39,8 +39,10 @@ require("core.options")
 require("core.keymaps")
 require("core.autocmds")
 require("core.terminal")
+require("core.treesitter").setup()
 
 -- Register health check commands without executing them synchronously at startup
+require("core.health").check()
 require("core.health").register_command()
 
 -- 7. Initialize Infrastructure & Plugins
