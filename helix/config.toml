@@ -1,0 +1,126 @@
+theme = "custom"
+
+[editor]
+line-number = "relative"
+mouse = true
+cursorline = true
+bufferline = "multiple"
+color-modes = true
+true-color = true
+idle-timeout = 50
+completion-timeout = 5
+auto-format = true
+popup-border = "all"
+end-of-line-diagnostics = "hint"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.indent-guides]
+render = true
+character = "╎"
+
+[editor.soft-wrap]
+enable = true
+
+[editor.inline-diagnostics]
+cursor-line = "warning"
+
+# ============================================================================
+# STATUSLINE
+# ============================================================================
+
+[editor.statusline]
+left = [
+  "mode",
+  "spinner",
+  "version-control",
+  "file-name",
+  "file-modification-indicator",
+]
+
+center = []
+
+right = [
+  "diagnostics",
+  "selections",
+  "position",
+  "position-percentage",
+  "file-line-ending",
+  "file-type",
+]
+
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+# ============================================================================
+# LSP
+# ============================================================================
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true
+
+# ============================================================================
+# FILE PICKER
+# ============================================================================
+
+[editor.file-picker]
+hidden = false
+git-ignore = true
+git-global = true
+
+# ============================================================================
+# SEARCH
+# ============================================================================
+
+[editor.search]
+smart-case = true
+wrap-around = true
+
+
+# ============================================================================
+# KEYMAPS
+# ============================================================================
+
+[keys.normal]
+
+# Quick save
+C-s = ":w"
+
+# Quit
+C-q = ":q"
+
+# File picker
+C-p = "file_picker"
+
+# Buffer picker
+C-b = "buffer_picker"
+
+# Lazy escape
+esc = ["collapse_selection", "keep_primary_selection"]
+
+# Move selected lines
+A-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+A-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+
+# ============================================================================
+# INSERT
+# ============================================================================
+
+[keys.insert]
+
+C-s = ":w"
+j = { k = "normal_mode" }
+
+# ============================================================================
+# SELECT
+# ============================================================================
+
+[keys.select]
+
+esc = ["collapse_selection", "normal_mode"]

@@ -3,8 +3,13 @@ local M = {}
 function M.setup()
 	-- Auto start Ollama if not running
 	if vim.fn.executable("ollama") == 1 then
-		local handle = vim.uv.spawn("nc", { args = { "-z", "127.0.0.1", "11434" } }, function(code)
-			if code ~= 0 then
+		local check_cmd = { "nc", "-z", "127.0.0.1", "11434" }
+		if vim.fn.executable("nc") ~= 1 then
+			check_cmd = { "sh", "-c", "command -v nc >/dev/null && nc -z 127.0.0.1 11434" }
+		end
+
+		vim.system(check_cmd, { text = true }, function(result)
+			if result.code ~= 0 then
 				vim.uv.spawn("ollama", { args = { "serve" }, detached = true }, function() end)
 			end
 		end)
@@ -39,12 +44,30 @@ function M.setup()
 		default_command_agent = "Ollama-3B",
 	})
 
+	require("copilot").setup({
+		suggestion = {
+			enabled = true,
+			auto_trigger = true,
+			debounce = 75,
+			keymap = {
+				accept = "<M-right>",
+				accept_word = false,
+				accept_line = false,
+				next = "<M-]>",
+				prev = "<M-[>",
+				dismiss = "<C-]>",
+			},
+		},
+		panel = { enabled = false },
+	})
+
 	local map = function(lhs, rhs, desc)
 		vim.keymap.set({ "n", "v" }, lhs, rhs, { desc = desc, silent = true })
 	end
 
 	map("<leader>aa", "<cmd>GpChatNew<cr>", "AI Chat")
 	map("<leader>aq", "<cmd>GpChatToggle<cr>", "AI Toggle")
+	map("<leader>at", "<cmd>Copilot toggle<cr>", "AI Copilot Toggle")
 	map("<leader>a3", function()
 		vim.cmd("GpAgent Ollama-3B")
 		vim.notify("Switched to Ollama-3B")

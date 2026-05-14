@@ -2,8 +2,8 @@ local M = {}
 
 local spec = require("infra.spec")
 
-local function on_attach(_, bufnr)
-	local map = function(lhs, rhs, desc)
+local function on_attach(client, bufnr)
+	local function map(lhs, rhs, desc)
 		vim.keymap.set("n", lhs, rhs, {
 			buffer = bufnr,
 			silent = true,
@@ -24,54 +24,67 @@ local function on_attach(_, bufnr)
 
 	-- Diagnostics
 	map("gl", vim.diagnostic.open_float, "Diagnostics: line diagnostics")
-	map("[d", vim.diagnostic.goto_prev, "Diagnostics: previous")
-	map("]d", vim.diagnostic.goto_next, "Diagnostics: next")
+	map("[d", function()
+		vim.diagnostic.jump({ count = -1 })
+	end, "Diagnostics: previous")
+	map("]d", function()
+		vim.diagnostic.jump({ count = 1 })
+	end, "Diagnostics: next")
 
 	-- Toggle inlay hints
-	if vim.lsp.inlay_hint then
+	if client:supports_method("textDocument/inlayHint") then
 		map("<leader>uh", function()
 			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
 		end, "LSP: toggle inlay hints")
 	end
 
-	-- Auto diagnostics popup on cursor hold
+	-- Optimize diagnostics popup: only create if not already exists and only on CursorHold
 	local group = vim.api.nvim_create_augroup("LspDiagnosticsFloat", { clear = false })
-
-	vim.api.nvim_clear_autocmds({
-		group = group,
-		buffer = bufnr,
-	})
+	vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })
 
 	vim.api.nvim_create_autocmd("CursorHold", {
 		group = group,
 		buffer = bufnr,
 		callback = function()
-			local diagnostics = vim.diagnostic.get(0, {
-				lnum = vim.api.nvim_win_get_cursor(0)[1] - 1,
-			})
-
-			if #diagnostics == 0 then
+			if vim.api.nvim_get_mode().mode ~= "n" or vim.fn.getcmdwintype() ~= "" then
 				return
+			end
+
+			-- Check if any float is already open (simplified but efficient)
+			for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+				local conf = vim.api.nvim_win_get_config(win)
+				if conf.relative ~= "" and conf.focusable then
+					return
+				end
 			end
 
 			vim.diagnostic.open_float(nil, {
 				focus = false,
 				scope = "cursor",
 				border = "rounded",
-				close_events = {
-					"CursorMoved",
-					"CursorMovedI",
-					"BufLeave",
-					"InsertEnter",
-				},
+				close_events = { "CursorMoved", "CursorMovedI", "BufLeave", "InsertEnter" },
 			})
 		end,
 	})
 end
 
 function M.setup()
-	-- Better CursorHold responsiveness without being too aggressive
-	vim.opt.updatetime = 1000
+	-- Basic LspInfo command for native-first observability
+	vim.api.nvim_create_user_command("LspInfo", function()
+		local clients = vim.lsp.get_clients()
+		if #clients == 0 then
+			vim.notify("No active LSP clients", vim.log.levels.WARN)
+			return
+		end
+
+		local lines = { "Active LSP Clients:" }
+		for _, client in ipairs(clients) do
+			table.insert(lines, string.format("- %s (id: %d, root: %s)", client.name, client.id, client.config.root_dir or "nil"))
+			local bufs = vim.lsp.get_buffers_by_client_id(client.id)
+			table.insert(lines, string.format("  Attached buffers: %s", table.concat(bufs, ", ")))
+		end
+		vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
+	end, { desc = "Show active LSP clients" })
 
 	-- LSP capabilities
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -104,12 +117,11 @@ function M.setup()
 			settings = s_spec.settings,
 
 			root_dir = function(bufnr, on_dir)
-				local util = require("lspconfig.util")
 				local bufname = vim.api.nvim_buf_get_name(bufnr)
 
 				-- Try project root markers first
 				if s_spec.root_markers and #s_spec.root_markers > 0 then
-					local root = util.root_pattern((table.unpack or unpack)(s_spec.root_markers))(bufname)
+					local root = vim.fs.root(bufnr, s_spec.root_markers)
 
 					if root then
 						on_dir(root)
@@ -117,8 +129,8 @@ function M.setup()
 					end
 				end
 
-				-- Fallback to current file directory
-				local fallback = bufname ~= "" and util.path.dirname(bufname) or vim.fn.getcwd()
+				-- Fallback to current file directory or CWD
+				local fallback = bufname ~= "" and vim.fs.dirname(bufname) or vim.uv.cwd()
 
 				on_dir(fallback)
 			end,

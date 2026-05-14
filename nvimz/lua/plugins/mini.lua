@@ -117,6 +117,7 @@ function M.setup()
 	vim.keymap.set("n", "<leader>fg", "<cmd>Pick grep_live<cr>", { desc = "Live grep" })
 	vim.keymap.set("n", "<leader>fb", "<cmd>Pick buffers<cr>", { desc = "Buffers" })
 	vim.keymap.set("n", "<leader>fh", "<cmd>Pick help<cr>", { desc = "Help tags" })
+	vim.keymap.set("n", "<leader>fd", "<cmd>Pick diagnostic<cr>", { desc = "Find diagnostics" })
 
 	require("mini.extra").setup()
 	vim.keymap.set("n", "<leader>gc", "<cmd>lua MiniExtra.pickers.git_commits()<cr>", { desc = "Git commits" })
@@ -272,56 +273,57 @@ function M.setup()
 
 	-- ============================================================================
 	-- TIME ICON
-	-- Ambient biological clock
+	-- Ambient biological clock with caching for smoothness
 	-- ============================================================================
 
+	local cached_time_icon = ""
+	local last_time_update = 0
+
 	local function get_time_icon()
-		local hour = tonumber(vim.fn.strftime("%H"))
+		local now = vim.uv.now()
+		if now - last_time_update < 60000 then -- Update every 60 seconds
+			return cached_time_icon
+		end
+
+		local hour = tonumber(os.date("%H"))
 
 		-- Dawn
 		if hour >= 5 and hour < 7 then
-			return "󰖚"
-
+			cached_time_icon = "󰖚"
 		-- Morning focus
 		elseif hour >= 7 and hour < 9 then
-			return ""
-
+			cached_time_icon = ""
 		-- Productive work
 		elseif hour >= 9 and hour < 12 then
-			return "󱎫"
-
+			cached_time_icon = "󱎫"
 		-- Lunch time
 		elseif hour >= 12 and hour < 13 then
-			return "󰩰"
-
+			cached_time_icon = "󰩰"
 		-- Hydration / refresh
 		elseif hour >= 13 and hour < 14 then
-			return ""
-
+			cached_time_icon = ""
 		-- Work
 		elseif hour >= 14 and hour < 17 then
-			return "󱍄"
-
+			cached_time_icon = "󱍄"
 		-- Afternoon
 		elseif hour >= 17 and hour < 18 then
-			return "󰖚"
-
+			cached_time_icon = "󰖚"
 		-- Dinner / relax
 		elseif hour >= 18 and hour < 20 then
-			return "󰅶"
-
+			cached_time_icon = "󰅶"
 		-- Calm evening
 		elseif hour >= 20 and hour < 23 then
-			return "󰖔"
-
+			cached_time_icon = "󰖔"
 		-- Sleep soon
 		elseif hour >= 23 and hour < 24 then
-			return "󰒲"
-
+			cached_time_icon = "󰒲"
 		-- Deep night
 		else
-			return ""
+			cached_time_icon = ""
 		end
+
+		last_time_update = now
+		return cached_time_icon
 	end
 
 	-- ============================================================================
@@ -359,75 +361,111 @@ function M.setup()
 
 	-- ============================================================================
 	-- FILE SIZE
+	-- Caching to avoid frequent syscalls during redraw
 	-- ============================================================================
 
-	local function get_filesize()
-		local size = vim.fn.getfsize(vim.fn.expand("%:p"))
+	local filesize_cache = {}
 
+	local function update_filesize_cache(bufnr)
+		bufnr = bufnr or vim.api.nvim_get_current_buf()
+		local path = vim.api.nvim_buf_get_name(bufnr)
+		if path == "" then
+			filesize_cache[bufnr] = ""
+			return
+		end
+
+		local size = vim.fn.getfsize(path)
 		if size <= 0 then
-			return ""
-		end
-
-		if size < 1024 then
-			return size .. "B"
+			filesize_cache[bufnr] = ""
+		elseif size < 1024 then
+			filesize_cache[bufnr] = size .. "B"
 		elseif size < 1024 * 1024 then
-			return string.format("%.1fKB", size / 1024)
+			filesize_cache[bufnr] = string.format("%.1fKB", size / 1024)
 		else
-			return string.format("%.1fMB", size / (1024 * 1024))
+			filesize_cache[bufnr] = string.format("%.1fMB", size / (1024 * 1024))
 		end
+	end
+
+	vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "BufEnter" }, {
+		group = vim.api.nvim_create_augroup("statusline_cache", { clear = true }),
+		callback = function(args)
+			update_filesize_cache(args.buf)
+		end,
+	})
+
+	local function get_filesize()
+		local bufnr = vim.api.nvim_get_current_buf()
+		if not filesize_cache[bufnr] then
+			update_filesize_cache(bufnr)
+		end
+		return filesize_cache[bufnr] or ""
 	end
 
 	-- ============================================================================
 	-- LSP
+	-- Caching to avoid querying clients on every redraw
 	-- ============================================================================
 
 	local lsp_icons = require("infra.spec").lsp_icons
+	local lsp_cache = {
+		val = "",
+		last_update = 0,
+	}
 
 	local function get_lsp()
+		local now = vim.uv.now()
+		if now - lsp_cache.last_update < 1000 then -- Update every second
+			return lsp_cache.val
+		end
+
 		local clients = vim.lsp.get_clients({ bufnr = 0 })
 
 		if #clients == 0 then
-			return ""
-		end
-
-		local names = {}
-
-		for _, client in ipairs(clients) do
-			if client.name ~= "copilot" then
-				local icon = lsp_icons[client.name] or "󰒋"
-				table.insert(names, icon .. " " .. client.name)
+			lsp_cache.val = ""
+		else
+			local names = {}
+			for _, client in ipairs(clients) do
+				if client.name ~= "copilot" then
+					local icon = lsp_icons[client.name] or "󰒋"
+					table.insert(names, icon .. " " .. client.name)
+				end
 			end
+			lsp_cache.val = table.concat(names, " ")
 		end
 
-		return table.concat(names, " ")
+		lsp_cache.last_update = now
+		return lsp_cache.val
 	end
 
 	-- ============================================================================
 	-- DIAGNOSTICS
+	-- Caching to reduce pressure during rapid redraws
 	-- ============================================================================
 
-	local function get_diagnostics()
-		local count = vim.diagnostic.count(0)
+	local diag_cache = {
+		val = "",
+		last_update = 0,
+	}
 
+	local function get_diagnostics()
+		local now = vim.uv.now()
+		if now - diag_cache.last_update < 100 then -- Update max 10 times per second
+			return diag_cache.val
+		end
+
+		local count = vim.diagnostic.count(0)
 		local errors = count[vim.diagnostic.severity.ERROR] or 0
 		local warns = count[vim.diagnostic.severity.WARN] or 0
 		local hints = count[vim.diagnostic.severity.HINT] or 0
 
 		local parts = {}
+		if errors > 0 then table.insert(parts, " " .. errors) end
+		if warns > 0 then table.insert(parts, " " .. warns) end
+		if hints > 0 then table.insert(parts, "󰌵 " .. hints) end
 
-		if errors > 0 then
-			table.insert(parts, " " .. errors)
-		end
-
-		if warns > 0 then
-			table.insert(parts, " " .. warns)
-		end
-
-		if hints > 0 then
-			table.insert(parts, "󰌵 " .. hints)
-		end
-
-		return table.concat(parts, " ")
+		diag_cache.val = table.concat(parts, " ")
+		diag_cache.last_update = now
+		return diag_cache.val
 	end
 
 	-- ============================================================================

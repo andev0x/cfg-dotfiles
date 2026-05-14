@@ -43,4 +43,4 @@ __pycache__/
 # Ignore custom local config
 local.*
 .commit_suggest_history.json
-
+helix/runtime/
