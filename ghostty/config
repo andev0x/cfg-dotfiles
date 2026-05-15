@@ -1,82 +1,141 @@
 # =============================================================================
-# Ghostty Terminal Configuration — Green Dark Forest Theme
-# Author: anvndev
+# Ghostty Configuration
+# Fast, smooth, minimal terminal setup for:
+# Neovim + Tmux + Backend / DevOps workflows
+# OPTIMIZED: Performance, UX/DX, & Smooth Cursor Tail Animation
 # =============================================================================
 
 # -----------------------------------------------------------------------------
 # Font
 # -----------------------------------------------------------------------------
-font-family            = "JetBrainsMono Nerd Font Mono"
-font-size              = 16
-font-style             = Medium
-adjust-cell-height     = 30%
-font-feature           = -liga
-font-thicken           = false
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 16
+adjust-cell-height = 1%
+font-feature = -liga
+font-thicken = true
 
 # -----------------------------------------------------------------------------
-# Colors (Green Forest Dark)
+# Theme — Dark Forest
 # -----------------------------------------------------------------------------
-#theme                  = "gruvboxdark"
-background             = "010D00"
-foreground             = "#B2D98B"
-cursor-style           = block
-cursor-opacity         = 0.75
-cursor-color           = "#80FF80"
-bold-is-bright         = true
-minimum-contrast       = 1.5
+background = #010D00
+foreground = #B2D98B
 
-# -----------------------------------------------------------------------------
-# Visuals
-# -----------------------------------------------------------------------------
-background-opacity     = 0.8
-background-blur-radius = 10
-window-colorspace      = srgb
-macos-titlebar-style   = hidden
+cursor-style = bar
+cursor-opacity = 0.85
+cursor-color = #80FF80
 
-# -----------------------------------------------------------------------------
-# Window
-# -----------------------------------------------------------------------------
-window-width           = 190
-window-height          = 48
+bold-is-bright = false
+minimum-contrast = 4.5
+
+palette = 0=#010D00
+palette = 1=#e06c75
+palette = 2=#98c379
+palette = 3=#e5c07b
+palette = 4=#61afef
+palette = 5=#c678dd
+palette = 6=#56b6c2
+palette = 7=#abb2bf
+palette = 8=#5c6370
+palette = 9=#e06c75
+palette = 10=#98c379
+palette = 11=#e5c07b
+palette = 12=#61afef
+palette = 13=#c678dd
+palette = 14=#56b6c2
+palette = 15=#ffffff
+
+# =============================================================================
+# Window & Rendering
+# =============================================================================
+background-opacity = 0.96
+background-blur-radius = 8
+
+window-colorspace = srgb
+macos-titlebar-style = hidden
+macos-titlebar-proxy-icon = hidden
+
+window-padding-x = 6
+window-padding-y = 4
 window-padding-balance = true
-window-save-state      = always
-resize-overlay         = never
-confirm-close-surface  = true
-macos-non-native-fullscreen = false
-window-decoration      = true
 
-# -----------------------------------------------------------------------------
-# Integration & Clipboard
-# -----------------------------------------------------------------------------
-mouse-scroll-multiplier     = 2
-shell-integration-features  = no-cursor,sudo
-copy-on-select              = clipboard
+window-save-state = always
+window-inherit-working-directory = true
+
+resize-overlay = always
+confirm-close-surface = true
+
+# =============================================================================
+# Performance & UX
+# =============================================================================
+scrollback-limit = 50000
+
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 2
+
+copy-on-select = clipboard
+clipboard-read = allow
 clipboard-trim-trailing-spaces = true
+
 quit-after-last-window-closed = true
+
+# =============================================================================
+# Shell Integration
+# =============================================================================
 macos-option-as-alt = true
 
-# -----------------------------------------------------------------------------
-# Keybindings
-# -----------------------------------------------------------------------------
-keybind = clear
+shell-integration = detect
+shell-integration-features = no-cursor,sudo,title
+
+term = xterm-ghostty
+
+# =============================================================================
+# Global Keybinds
+# =============================================================================
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# =============================================================================
+# Cursor Shader (Optimized for smooth tail animation)
+# =============================================================================
+custom-shader = shaders/cursor_tail.glsl
+
+# =============================================================================
+# Tabs
+# =============================================================================
 keybind = cmd+t=new_tab
 keybind = cmd+w=close_surface
-keybind = cmd+n=new_window
+keybind = cmd+]=next_tab
+keybind = cmd+[=previous_tab
 keybind = cmd+shift+right=next_tab
 keybind = cmd+shift+left=previous_tab
 keybind = cmd+1=goto_tab:1
 keybind = cmd+2=goto_tab:2
 keybind = cmd+3=goto_tab:3
-keybind = cmd+shift+v=new_split:right
-keybind = cmd+shift+s=new_split:down
-keybind = cmd+shift+z=toggle_split_zoom
-keybind = cmd+shift+j=goto_split:bottom
-keybind = cmd+shift+k=goto_split:top
-keybind = cmd+shift+l=goto_split:right
-keybind = cmd+shift+h=goto_split:left
-keybind = cmd+plus=increase_font_size:1
+keybind = cmd+4=goto_tab:4
+keybind = cmd+5=goto_tab:5
+
+# =============================================================================
+# Windows & Splits
+# =============================================================================
+keybind = cmd+n=new_window
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+ctrl+h=goto_split:left
+keybind = cmd+ctrl+j=goto_split:bottom
+keybind = cmd+ctrl+k=goto_split:top
+keybind = cmd+ctrl+l=goto_split:right
+keybind = cmd+shift+f=toggle_fullscreen
+
+# =============================================================================
+# Font Scaling
+# =============================================================================
+keybind = cmd+equal=increase_font_size:1
 keybind = cmd+minus=decrease_font_size:1
 keybind = cmd+0=reset_font_size
+
+# =============================================================================
+# Clipboard & Utilities
+# =============================================================================
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard
+keybind = cmd+shift+c=clear_screen
 keybind = cmd+r=reload_config
