@@ -39,12 +39,18 @@ end, { desc = "Copy directory path", silent = true })
 -- Split management
 map("n", "<leader>sv", "<cmd>vsplit<cr>", { desc = "Split vertical", silent = true })
 map("n", "<leader>sh", "<cmd>split<cr>", { desc = "Split horizontal", silent = true })
+map("n", "<leader>se", "<C-w>=", { desc = "Equalize splits", silent = true })
 
 -- Resize splits
-map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height", silent = true })
-map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height", silent = true })
-map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width", silent = true })
-map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width", silent = true })
+map("n", "<A-Up>", "<cmd>resize +2<CR>", { desc = "Resize height +2", silent = true })
+map("n", "<A-Down>", "<cmd>resize -2<CR>", { desc = "Resize height -2", silent = true })
+map("n", "<A-Left>", "<cmd>vertical resize -2<CR>", { desc = "Resize width -2", silent = true })
+map("n", "<A-Right>", "<cmd>vertical resize +2<CR>", { desc = "Resize width +2", silent = true })
+
+-- map("n", "<A-k>", "<cmd>resize +2<CR>", { desc = "Resize height +2", silent = true })
+-- map("n", "<A-j>", "<cmd>resize -2<CR>", { desc = "Resize height -2", silent = true })
+-- map("n", "<A-h>", "<cmd>vertical resize -2<CR>", { desc = "Resize width -2", silent = true })
+-- map("n", "<A-l>", "<cmd>vertical resize +2<CR>", { desc = "Resize width +2", silent = true })
 
 -- Window navigation
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", silent = true })
