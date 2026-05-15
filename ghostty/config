@@ -2,7 +2,7 @@
 # Ghostty Configuration
 # Fast, smooth, minimal terminal setup for:
 # Neovim + Tmux + Backend / DevOps workflows
-# OPTIMIZED: Performance, UX/DX, & Smooth Cursor Tail Animation
+# Optimized for low latency, smooth rendering, and stable cursor shaders
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -10,9 +10,15 @@
 # -----------------------------------------------------------------------------
 font-family = JetBrainsMono Nerd Font Mono
 font-size = 16
+
+# Slightly increase line height for readability
 adjust-cell-height = 1%
+
+# Disable ligatures for cleaner code alignment
 font-feature = -liga
-font-thicken = true
+
+# Keep font rendering sharp on macOS Retina displays
+font-thicken = false
 
 # -----------------------------------------------------------------------------
 # Theme — Dark Forest
@@ -47,32 +53,47 @@ palette = 15=#ffffff
 # =============================================================================
 # Window & Rendering
 # =============================================================================
+
+# Slight transparency without excessive GPU cost
 background-opacity = 0.96
-background-blur-radius = 8
+
+# Lower blur radius for smoother rendering performance
+background-blur-radius = 4
 
 window-colorspace = srgb
+
 macos-titlebar-style = hidden
 macos-titlebar-proxy-icon = hidden
 
+# Balanced padding for Neovim + tmux layouts
 window-padding-x = 6
-window-padding-y = 4
-window-padding-balance = true
+window-padding-y = 2
+
+# Disable balancing to avoid "floating centered" appearance
+window-padding-balance = false
 
 window-save-state = always
 window-inherit-working-directory = true
 
-resize-overlay = always
-confirm-close-surface = true
+# Cleaner resize behavior
+resize-overlay = never
+
+# Tmux already provides enough session safety
+confirm-close-surface = false
 
 # =============================================================================
 # Performance & UX
 # =============================================================================
-scrollback-limit = 50000
+
+# Tmux already stores history, so keep Ghostty lighter
+scrollback-limit = 20000
 
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 
-copy-on-select = clipboard
+# Prevent accidental clipboard overwrites
+copy-on-select = false
+
 clipboard-read = allow
 clipboard-trim-trailing-spaces = true
 
@@ -81,32 +102,42 @@ quit-after-last-window-closed = true
 # =============================================================================
 # Shell Integration
 # =============================================================================
+
 macos-option-as-alt = true
 
+# Prevent Ghostty from overriding cursor rendering
 shell-integration = detect
 shell-integration-features = no-cursor,sudo,title
 
 term = xterm-ghostty
 
 # =============================================================================
-# Global Keybinds
+# Cursor Shader
 # =============================================================================
-keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# Smooth SDF-based cursor trail shader
+custom-shader = shaders/cursor_tail.glsl
 
 # =============================================================================
-# Cursor Shader (Optimized for smooth tail animation)
+# Global Keybinds
 # =============================================================================
-custom-shader = shaders/cursor_tail.glsl
+
+# Toggle global quick terminal
+keybind = global:cmd+grave_accent=toggle_quick_terminal
 
 # =============================================================================
 # Tabs
 # =============================================================================
+
 keybind = cmd+t=new_tab
 keybind = cmd+w=close_surface
+
 keybind = cmd+]=next_tab
 keybind = cmd+[=previous_tab
+
 keybind = cmd+shift+right=next_tab
 keybind = cmd+shift+left=previous_tab
+
 keybind = cmd+1=goto_tab:1
 keybind = cmd+2=goto_tab:2
 keybind = cmd+3=goto_tab:3
@@ -116,18 +147,25 @@ keybind = cmd+5=goto_tab:5
 # =============================================================================
 # Windows & Splits
 # =============================================================================
+
 keybind = cmd+n=new_window
+
+# Native Ghostty splits
 keybind = cmd+d=new_split:right
 keybind = cmd+shift+d=new_split:down
+
+# Split navigation
 keybind = cmd+ctrl+h=goto_split:left
 keybind = cmd+ctrl+j=goto_split:bottom
 keybind = cmd+ctrl+k=goto_split:top
 keybind = cmd+ctrl+l=goto_split:right
+
 keybind = cmd+shift+f=toggle_fullscreen
 
 # =============================================================================
 # Font Scaling
 # =============================================================================
+
 keybind = cmd+equal=increase_font_size:1
 keybind = cmd+minus=decrease_font_size:1
 keybind = cmd+0=reset_font_size
@@ -135,7 +173,11 @@ keybind = cmd+0=reset_font_size
 # =============================================================================
 # Clipboard & Utilities
 # =============================================================================
+
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard
+
 keybind = cmd+shift+c=clear_screen
+
+# Reload Ghostty configuration
 keybind = cmd+r=reload_config
